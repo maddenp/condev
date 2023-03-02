@@ -1,0 +1,25 @@
+package:
+  name: foo
+  version: 0.0.1
+source:
+  path: ../src
+build:
+  number: 0
+requirements:
+  build:
+    - make >=4.3
+    - {{ compiler('c') }}
+  host:
+    - python =3.10
+  run:
+    - numpy
+test:
+  requires:
+    - black
+    - coverage
+    - isort
+    - mypy
+    - pylint
+    - pytest
+about:
+  license: OTHER

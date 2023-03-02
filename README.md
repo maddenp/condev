@@ -1,2 +1,3 @@
 # conda-devenv
-Creates conda development environments
+
+Creates conda development environments.

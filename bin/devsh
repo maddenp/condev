@@ -1,0 +1,35 @@
+#!/bin/bash
+
+set -eu
+
+devsh_rc() {
+  local meta name
+  test -e ~/.bashrc && source ~/.bashrc
+  source $(realpath $(dirname $CONDA)/../etc/profile.d/conda.sh)
+  conda activate
+  echo -e "\n=> Preparing development environment"
+  $(dirname $THIS)/devmeta
+  meta=$(realpath $PWD/recipe/meta.json)
+  name=${DEV_ENV_PREFIX:-DEV}-$(jq -r .name $meta)
+  if conda env list | grep -q "^$name "; then
+    echo "=> Found existing environment $name"
+  else
+    echo -e "=> Creating environment $name\n"
+    conda create -y -n $name --file <( jq -r .packages[] $meta ) --repodata-fn repodata.json
+  fi
+  echo "=> Activating environment $name"
+  set +u && conda activate $name && set -u
+  echo -e "=> Running setuptools\n"
+  (cd $(jq -r .source $meta) && pip install --editable .)
+  echo -e "\n=> Development environment active (type 'exit' when finished)\n"
+  unset -f devsh_rc devsh_shell
+  set +eu
+}
+
+devsh_shell() {
+  test -z "${CONDA_DEFAULT_ENV:-}" && eval "$(conda shell.bash hook)" && conda activate
+  local vars=( CONDA=$CONDA_EXE THIS=$(realpath $0) )
+  env ${vars[@]} /bin/bash --rcfile <( sed -e "s/^devsh_shell$/devsh_rc/" $0 )
+}
+
+devsh_shell
