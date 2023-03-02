@@ -1,8 +1,15 @@
-FILES = devmeta src/setup.py src/foo/core.py
+PYFILES = $(shell find . -type f -name "*.py")
+TARGETS = format test
 
 .ONESHELL:
-.PHONY: qc
+.PHONY: format
 
-qc:
+all:
+	$(error Valid targets are: $(TARGETS))
+
+format:
 	set -x
-	black -l 100 $(FILES) && isort --profile black $(FILES) && pylint $(FILES) && mypy --install-types $(FILES)
+	black -l 100 $(PYFILES) && isort --profile black $(PYFILES)
+
+test:
+	recipe/run_test.sh
