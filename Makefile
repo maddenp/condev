@@ -1,6 +1,8 @@
-PYFILES		= $(shell find . -type f -name "*.py")
-RECIPEDIR = $(shell realpath ./recipe)
-TARGETS		= env format meta package test
+META				= recipe/meta.json
+PYFILES			= $(shell find . -type f -name "*.py")
+RECIPEDIR		= $(shell realpath ./recipe)
+RECIPEFILES = $(addprefix $(RECIPEDIR)/,build.sh conda_build_config.yaml meta.yaml run_test.sh)
+TARGETS			= env format meta package test
 
 .ONESHELL:
 .PHONY: $(TARGETS)
@@ -14,11 +16,13 @@ env:
 format:
 	black -l 100 $(PYFILES) && isort --profile black $(PYFILES)
 
-meta:
-	RECIPEDIR=$(RECIPEDIR) src/devenv/devmeta.py
+meta: $(META)
 
-package:
+package: meta
 	true # conda build ...
 
 test:
 	recipe/run_test.sh
+
+$(META): $(RECIPEFILES)
+	RECIPEDIR=$(RECIPEDIR) src/devenv/devmeta.py
