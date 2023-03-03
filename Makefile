@@ -1,15 +1,24 @@
-PYFILES = $(shell find . -type f -name "*.py")
-TARGETS = format test
+PYFILES		= $(shell find . -type f -name "*.py")
+RECIPEDIR = $(shell realpath ./recipe)
+TARGETS		= env format meta package test
 
 .ONESHELL:
-.PHONY: format
+.PHONY: $(TARGETS)
 
 all:
 	$(error Valid targets are: $(TARGETS))
 
+env:
+	true # conda create ...
+
 format:
-	set -x
 	black -l 100 $(PYFILES) && isort --profile black $(PYFILES)
+
+meta:
+	RECIPEDIR=$(RECIPEDIR) src/devenv/devmeta.py
+
+package:
+	true # conda build ...
 
 test:
 	recipe/run_test.sh

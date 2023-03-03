@@ -14,14 +14,14 @@ devsh_rc() {
   if conda env list | grep -q "^$name "; then
     echo "=> Found existing environment $name"
   else
-    echo -e "=> Creating environment $name\n"
+    echo "=> Creating environment $name"
     conda create -y -n $name --file <( jq -r .packages[] $meta ) --repodata-fn repodata.json
   fi
   echo "=> Activating environment $name"
   set +u && conda activate $name && set -u
-  echo -e "=> Running setuptools\n"
+  echo "=> Running setuptools"
   (cd $(jq -r .source $meta) && pip install --editable .)
-  echo -e "\n=> Development environment active (type 'exit' when finished)\n"
+  echo -e "=> Development environment active (type 'exit' when finished)\n"
   unset -f devsh_rc devsh_shell
   set +eu
 }

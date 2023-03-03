@@ -6,6 +6,7 @@ environment, by rendering and inspecting a conda-build recipe.
 """
 
 import json
+import os
 import sys
 from itertools import chain
 from pathlib import Path
@@ -22,13 +23,15 @@ def die(message: str) -> None:
 
 def main() -> None:
     """Main entry point"""
-    recipe = Path("./recipe").resolve()
-    if not recipe.is_dir():
-        die(f"Are you in the right place? No '{recipe.name}/' was found")
+    recipedir = "RECIPEDIR"
+    try:
+        recipedir = Path(os.environ[recipedir]).resolve()
+    except KeyError:
+        die(f"Export {recipedir} pointing to conda-build recipe")
+    if not recipedir.is_dir():
+        die(f"Are you in the right place? No '{recipedir.name}/' was found")
     msg("Rendering recipe")
-    print()  # for tidy output
-    solves = api.render(recipe)
-    print()  # for tidy output
+    solves = api.render(recipedir)
     if len(solves) > 1:
         msg(f"Using first of {len(solves)} solves found")
     meta = solves[0][0]
@@ -40,7 +43,7 @@ def main() -> None:
             "version": version(meta),
         }
     )
-    with open(Path(recipe, "meta.json"), "w", encoding="utf-8") as f:  # pylint: disable=C0103
+    with open(Path(recipedir, "meta.json"), "w", encoding="utf-8") as f:  # pylint: disable=C0103
         print(out, file=f)
     meta.clean()
 
@@ -59,7 +62,7 @@ def packages(meta: MetaData) -> list:
     """A sorted list of build/host/run/test packages"""
     rrt = meta.get_rendered_recipe_text()
     packages_set = {
-        *chain.from_iterable([rrt["requirements"][x] for x in ("build", "host", "run")]),
+        *chain.from_iterable([rrt["requirements"].get(x) or [] for x in ("build", "host", "run")]),
         *rrt["test"]["requires"],
     }
     return sorted(list(packages_set))
@@ -78,6 +81,12 @@ def version(meta: MetaData) -> str:
     """The package version"""
     return meta.get_section("package")["version"]
 
+
+# NB: In general, modules should not provide the #! at the top of this file or
+# the "if __name__ ..." block below, but should instead define the necessary
+# functions and define entry points in setuptool's setup.py. This module is a
+# special case, as it needs to be called, for bootstrapping, in contexts where
+# setuptools has not run yet.
 
 if __name__ == "__main__":
     main()
