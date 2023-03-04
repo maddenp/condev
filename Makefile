@@ -1,9 +1,11 @@
-META        = recipe/meta.json
+METAJSON    = recipe/meta.json
 PYFILES     = $(shell find . -type f -name "*.py")
-RECIPEDIR   = $(shell realpath ./recipe)
 RECIPEFILES = $(addprefix $(RECIPEDIR)/,build.sh conda_build_config.yaml meta.yaml run_test.sh)
 SRCDIR      = $(shell realpath ./src)
 TARGETS     = env format meta package test
+
+export PYTHONPATH := $(SRCDIR)
+export RECIPEDIR  := $(shell realpath ./recipe)
 
 .ONESHELL:
 .PHONY: $(TARGETS)
@@ -17,7 +19,7 @@ env:
 format:
 	black -l 100 $(PYFILES) && isort --profile black $(PYFILES)
 
-meta: $(META)
+meta: $(METAJSON)
 
 package: meta
 	true # conda build ...
@@ -25,7 +27,5 @@ package: meta
 test:
 	recipe/run_test.sh
 
-$(META): $(RECIPEFILES)
-	export PYTHONPATH=$(SRCDIR)
-	export RECIPEDIR=$(RECIPEDIR)
+$(METAJSON): $(RECIPEFILES)
 	python -c "from devenv.meta import *; main()"
