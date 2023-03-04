@@ -36,6 +36,20 @@ def mockmeta():
     return mm
 
 
+@fixture
+def packages():
+    return [
+        "a >2.2",
+        "b >1.0,<2.0",
+        "c >=6.6",
+        "d =5.5.*",
+        "e =1.1",
+        "f <3.3",
+        "g",
+        "h =4.4",
+    ]
+
+
 def test_die():
     with raises(SystemExit):
         meta.die("testing")
@@ -48,7 +62,7 @@ def test_get_channels(data, tmpdir):
     assert meta.get_channels(tmpdir) == ["local"]
 
 
-def test_get_meta_json(data, mockmeta):
+def test_get_meta_json(data, mockmeta, packages):
     with patch.object(meta, "api") as api:
         solve0 = [mockmeta, None]
         solve1 = []
@@ -57,18 +71,29 @@ def test_get_meta_json(data, mockmeta):
         x = meta.json.loads(meta.get_meta_json(recipedir=data, channels=channels))
         assert x == {
             "name": "pkgname",
-            "packages": [
-                "a >2.2",
-                "b >1.0,<2.0",
-                "c >=6.6",
-                "d =5.5.*",
-                "e =1.1",
-                "f <3.3",
-                "g",
-                "h =4.4",
-            ],
+            "packages": packages,
             "source": "/source/path",
             "version": "1.0.1",
         }
         api.render.assert_called_once_with(data, channels=channels, override_channels=True)
         mockmeta.clean.assert_called_once()
+
+
+def test_get_name(mockmeta):
+    assert meta.get_name(mockmeta) == "pkgname"
+
+
+def test_get_packages(mockmeta, packages):
+    assert meta.get_packages(mockmeta) == packages
+
+
+def test_get_recipedir():
+    assert 2 + 2 == 5
+
+
+def test_get_source(mockmeta):
+    assert meta.get_source(mockmeta) == "/source/path"
+
+
+def test_get_version(mockmeta):
+    assert meta.get_version(mockmeta) == "1.0.1"
