@@ -22,11 +22,11 @@ def die(message: str) -> None:
 
 def main() -> None:
     """Main entry point"""
-    recipedir = "RECIPE_DIR"
+    rdname = "RECIPE_DIR"
     try:
-        recipedir = Path(os.environ[recipedir]).resolve()
+        recipedir = Path(os.environ[rdname]).resolve()
     except KeyError:
-        die(f"Export {recipedir} pointing to conda-build recipe")
+        die(f"Export {rdname} pointing to conda-build recipe")
     if not recipedir.is_dir():
         die(f"Are you in the right place? No '{recipedir.name}/' was found")
     msg("Getting channels")
