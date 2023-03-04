@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Produce a list of build/host/run/test packages, for creation of a development
 environment, by rendering and inspecting a conda-build recipe.
@@ -30,8 +28,16 @@ def main() -> None:
         die(f"Export {recipedir} pointing to conda-build recipe")
     if not recipedir.is_dir():
         die(f"Are you in the right place? No '{recipedir.name}/' was found")
+    msg("Getting channels")
+    channels = []
+    channels_file = Path(recipedir, "channels")
+    if channels_file.is_file():
+        with open(channels_file, "r", encoding="utf-8") as f:
+            channels = list(filter(None, f.read().split("\n")))
+    else:
+        msg("No 'channels' file found in recipe directory, using defaults")
     msg("Rendering recipe")
-    solves = api.render(recipedir)
+    solves = api.render(recipedir, channels=channels)
     if len(solves) > 1:
         msg(f"Using first of {len(solves)} solves found")
     meta = solves[0][0]
@@ -80,13 +86,3 @@ def source(meta: MetaData) -> str:
 def version(meta: MetaData) -> str:
     """The package version"""
     return meta.get_section("package")["version"]
-
-
-# NB: In general, modules should not provide the #! at the top of this file or
-# the "if __name__ ..." block below, but should instead define the necessary
-# functions and define entry points in setuptool's setup.py. This module is a
-# special case, as it needs to be called, for bootstrapping, in contexts where
-# setuptools has not run yet.
-
-if __name__ == "__main__":
-    main()

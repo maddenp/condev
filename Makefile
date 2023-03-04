@@ -1,8 +1,9 @@
-META				= recipe/meta.json
-PYFILES			= $(shell find . -type f -name "*.py")
-RECIPEDIR		= $(shell realpath ./recipe)
+META        = recipe/meta.json
+PYFILES     = $(shell find . -type f -name "*.py")
+RECIPEDIR   = $(shell realpath ./recipe)
 RECIPEFILES = $(addprefix $(RECIPEDIR)/,build.sh conda_build_config.yaml meta.yaml run_test.sh)
-TARGETS			= env format meta package test
+SRCDIR      = $(shell realpath ./src)
+TARGETS     = env format meta package test
 
 .ONESHELL:
 .PHONY: $(TARGETS)
@@ -25,4 +26,6 @@ test:
 	recipe/run_test.sh
 
 $(META): $(RECIPEFILES)
-	RECIPEDIR=$(RECIPEDIR) src/devenv/devmeta.py
+	export PYTHONPATH=$(SRCDIR)
+	export RECIPEDIR=$(RECIPEDIR)
+	python -c "from devenv.meta import *; main()"
