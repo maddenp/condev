@@ -37,7 +37,7 @@ def main() -> None:
     else:
         msg("No 'channels' file found in recipe directory, using defaults")
     msg("Rendering recipe")
-    solves = api.render(recipedir, channels=channels)
+    solves = api.render(recipedir, channels=channels, override_channels=True)
     if len(solves) > 1:
         msg(f"Using first of {len(solves)} solves found")
     meta = solves[0][0]
