@@ -5,6 +5,7 @@ environment, by rendering and inspecting a conda-build recipe.
 
 import json
 import os
+import re
 import sys
 from itertools import chain
 from pathlib import Path
@@ -67,11 +68,15 @@ def name(meta: MetaData) -> str:
 def packages(meta: MetaData) -> list:
     """A sorted list of build/host/run/test packages"""
     rrt = meta.get_rendered_recipe_text()
-    packages_set = {
+    pkglist = []
+    for pkg in {
         *chain.from_iterable([rrt["requirements"].get(x) or [] for x in ("build", "host", "run")]),
         *rrt["test"]["requires"],
-    }
-    return sorted(list(packages_set))
+    }:
+        if " " in pkg and not any(x in pkg for x in ["<", "=", ">"]):
+            pkg = re.sub(r"  *", " =", pkg)
+        pkglist.append(pkg)
+    return sorted(pkglist)
 
 
 def source(meta: MetaData) -> str:
