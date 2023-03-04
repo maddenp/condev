@@ -18,6 +18,24 @@ def data():
     return Path(Path(__file__).parent, "data")
 
 
+@fixture
+def mockmeta():
+    mm = Mock()
+    mm.get_rendered_recipe_text.return_value = {
+        "requirements": {
+            "build": ["b >1.0,<2.0", "e =1.1"],
+            "host": ["a >2.2", "f <3.3"],
+            "run": ["h 4.4", "d 5.5.*"],
+        },
+        "test": {"requires": ["c >=6.6", "g"]},
+    }
+    mm.get_section = lambda section: {
+        "package": {"name": "pkgname", "version": "1.0.1"},
+        "source": {"path": "/source/path"},
+    }[section]
+    return mm
+
+
 def test_die():
     with raises(SystemExit):
         meta.die("testing")
@@ -30,25 +48,13 @@ def test_get_channels(data, tmpdir):
     assert meta.get_channels(tmpdir) == ["local"]
 
 
-def test_get_meta_json():
+def test_get_meta_json(data, mockmeta):
     with patch.object(meta, "api") as api:
-        m = Mock()
-        m.get_rendered_recipe_text.return_value = {
-            "requirements": {
-                "build": ["b >1.0,<2.0", "e =1.1"],
-                "host": ["a >2.2", "f <3.3"],
-                "run": ["h 4.4", "d 5.5.*"],
-            },
-            "test": {"requires": ["c >=6.6", "g"]},
-        }
-        m.get_section = lambda section: {
-            "package": {"name": "pkgname", "version": "1.0.1"},
-            "source": {"path": "/source/path"},
-        }[section]
-        solve0 = [m, None]
+        solve0 = [mockmeta, None]
         solve1 = []
         api.render.return_value = [solve0, solve1]
-        x = meta.json.loads(meta.get_meta_json(recipedir=data, channels=["c1", "c2"]))
+        channels = ["c1", "c2"]
+        x = meta.json.loads(meta.get_meta_json(recipedir=data, channels=channels))
         assert x == {
             "name": "pkgname",
             "packages": [
@@ -64,4 +70,5 @@ def test_get_meta_json():
             "source": "/source/path",
             "version": "1.0.1",
         }
-        m.clean.assert_called_once()
+        api.render.assert_called_once_with(data, channels=channels, override_channels=True)
+        mockmeta.clean.assert_called_once()
