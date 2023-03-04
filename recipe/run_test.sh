@@ -1,15 +1,19 @@
 #!/bin/bash -eu
 
 lint() {
-  (set -x && pylint ${pyfiles[*]})
+  (set -eux && pylint ${pyfiles[*]})
 }
 
 typecheck() {
-  (set -x && mypy --install-types ${pyfiles[*]})
+  (set -eux && mypy --install-types ${pyfiles[*]})
 }
 
 unittest() {
-  (set -x && true that unittests shoudl be written) # TODO FIXME
+  (
+    set -eux
+    coverage run -m pytest $srcdir/test
+    coverage report --fail-under 100 --show-missing
+  )
 }
 
 test "${CONDA_BUILD:-}" = 1 && srcdir=$PWD || srcdir=$(realpath $(dirname $0)/../src)

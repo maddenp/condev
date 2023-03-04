@@ -21,7 +21,7 @@ def die(message: str) -> None:
     sys.exit(1)
 
 
-def get_channels(recipedir: str) -> List[str]:
+def get_channels(recipedir: Path) -> List[str]:
     """The list of channels from which packages can be used"""
     msg("Getting channels")
     channels = []
@@ -35,7 +35,7 @@ def get_channels(recipedir: str) -> List[str]:
     return channels
 
 
-def get_meta_json(recipedir: str, channels: List[str]) -> str:
+def get_meta_json(recipedir: Path, channels: List[str]) -> str:
     """A dict version of select package metadata"""
     msg("Rendering recipe")
     solves = api.render(recipedir, channels=channels, override_channels=True)
@@ -73,7 +73,7 @@ def get_packages(meta: MetaData) -> list:
     return sorted(pkglist)
 
 
-def get_recipedir() -> str:
+def get_recipedir() -> Path:
     """The directory containing meta.yaml"""
     rdname = "RECIPE_DIR"
     try:
@@ -82,7 +82,7 @@ def get_recipedir() -> str:
         die(f"Export {rdname} pointing to conda-build recipe")
     if not recipedir.is_dir():
         die(f"Are you in the right place? No '{recipedir.name}/' was found")
-    return str(recipedir)
+    return recipedir
 
 
 def get_source(meta: MetaData) -> str:
