@@ -4,14 +4,12 @@ set -eu
 
 devconda_rc() {
   local meta name
+  test -z "${RECIPE_DIR:-}" && echo "Set RECIPE_DIR or run 'make devshell'" && exit 1
   test -e ~/.bashrc && source ~/.bashrc
   source $(realpath $(dirname $CONDA)/../etc/profile.d/conda.sh)
   conda activate
-  echo -e "\n=> Preparing development environment"
-  if ! make meta; then
-    echo "=> Are you in the right place?"
-    exit 1
-  fi
+  echo "=> Preparing development environment"
+  make meta
   meta=$(realpath $PWD/recipe/meta.json)
   name=${DEV_ENV_PREFIX:-DEV}-$(jq -r .name $meta)
   if conda env list | grep -q "^$name "; then
@@ -24,7 +22,7 @@ devconda_rc() {
   set +u && conda activate $name && set -u
   echo "=> Doing editable install with setuptools"
   (cd $(jq -r .source $meta) && pip install --editable .)
-  echo -e "=> Development environment active (type 'exit' when finished)\n"
+  echo "=> Development environment active (type 'exit' when finished)"
   unset -f devconda_rc devconda_shell
   set +eu
 }
