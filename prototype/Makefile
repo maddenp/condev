@@ -13,7 +13,7 @@ all:
 	$(error Valid targets are: $(TARGETS))
 
 devshell:
-	devconda-shell
+	devconda-shell || true
 
 env:
 	true # conda create ...

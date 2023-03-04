@@ -3,7 +3,7 @@
 set -eu
 
 devconda_rc() {
-  local meta name
+  local exists meta name
   test -z "${RECIPE_DIR:-}" && echo "Set RECIPE_DIR or run 'make devshell'" && exit 1
   test -e ~/.bashrc && source ~/.bashrc
   source $(realpath $(dirname $CONDA)/../etc/profile.d/conda.sh)
@@ -13,15 +13,19 @@ devconda_rc() {
   meta=$(realpath $PWD/recipe/meta.json)
   name=${DEV_ENV_PREFIX:-DEV}-$(jq -r .name $meta)
   if conda env list | grep -q "^$name "; then
+    exists=true
     echo "=> Found existing environment $name"
   else
+    exists=false
     echo "=> Creating environment $name"
     conda create -y -n $name --file <( jq -r .packages[] $meta ) --repodata-fn repodata.json
   fi
   echo "=> Activating environment $name"
   set +u && conda activate $name && set -u
-  echo "=> Doing editable install with setuptools"
-  (cd $(jq -r .source $meta) && pip install --editable .)
+  if [[ $exists = false ]]; then
+    echo "=> Doing editable install with setuptools"
+    (cd $(jq -r .source $meta) && pip install --editable .)
+  fi
   echo "=> Development environment active (type 'exit' when finished)"
   unset -f devconda_rc devconda_shell
   set +eu
