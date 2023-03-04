@@ -21,7 +21,7 @@ def die(message: str) -> None:
 
 def main() -> None:
     """Main entry point"""
-    recipedir = "RECIPEDIR"
+    recipedir = "RECIPE_DIR"
     try:
         recipedir = Path(os.environ[recipedir]).resolve()
     except KeyError:

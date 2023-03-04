@@ -1,17 +1,17 @@
-PYFILES=( $(find $(dirname $(basename $0)) -type f -name "*.py") )
-
 lint() {
-  pylint ${PYFILES[*]}
+  pylint ${pyfiles[*]}
 }
 
 typecheck() {
-  mypy --install-types ${PYFILES[*]}  
+  mypy --install-types ${pyfiles[*]}  
 }
 
 unittest() {
   true
 }
 
+test $CONDA_BUILD == 1 && srcdir=$PWD || srcdir=$(realpath ../src)
+pyfiles=( $(find $srcdir -type f -name "*.py") )
 fn=${1:-} # optional single test function to run
 if [[ -n "$fn" ]]; then
   $fn
