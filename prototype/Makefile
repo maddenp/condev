@@ -2,7 +2,7 @@ CHANNELS    = $(addprefix -c ,$(shell tr '\n' ' ' <$(RECIPE_DIR)/channels))
 METAJSON    = recipe/meta.json
 PYFILES     = $(shell find . -type f -name "*.py")
 RECIPEFILES = $(addprefix $(RECIPE_DIR)/,build.sh conda_build_config.yaml meta.yaml run_test.sh)
-TARGETS     = env format lint meta package test typecheck unittest
+TARGETS     = devshell env format lint meta package test typecheck unittest
 
 export RECIPE_DIR := $(shell realpath ./recipe)
 
@@ -11,6 +11,9 @@ export RECIPE_DIR := $(shell realpath ./recipe)
 
 all:
 	$(error Valid targets are: $(TARGETS))
+
+devshell:
+	devconda-shell
 
 env:
 	true # conda create ...
