@@ -1,4 +1,4 @@
-CHANNELS    = $(addprefix -c ,$(shell tr '\n' ' ' <$(RECIPE_DIR)/channels))
+CHANNELS    = $(addprefix -c ,$(shell tr '\n' ' ' <$(RECIPE_DIR)/channels)) -c local
 METAJSON    = recipe/meta.json
 PYFILES     = $(shell find src -type f -name "*.py")
 RECIPEFILES = $(addprefix $(RECIPE_DIR)/,build.sh conda_build_config.yaml meta.yaml run_test.sh)

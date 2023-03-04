@@ -9,6 +9,7 @@ import re
 import sys
 from itertools import chain
 from pathlib import Path
+from typing import List
 
 from conda_build import api  # type: ignore
 from conda_build.metadata import MetaData  # type: ignore
@@ -20,15 +21,8 @@ def die(message: str) -> None:
     sys.exit(1)
 
 
-def main() -> None:
-    """Main entry point"""
-    rdname = "RECIPE_DIR"
-    try:
-        recipedir = Path(os.environ[rdname]).resolve()
-    except KeyError:
-        die(f"Export {rdname} pointing to conda-build recipe")
-    if not recipedir.is_dir():
-        die(f"Are you in the right place? No '{recipedir.name}/' was found")
+def get_channels(recipedir: str) -> List[str]:
+    """The list of channels from which packages can be used"""
     msg("Getting channels")
     channels = []
     channels_file = Path(recipedir, "channels")
@@ -37,35 +31,35 @@ def main() -> None:
             channels = list(filter(None, f.read().split("\n")))
     else:
         msg("No 'channels' file found in recipe directory, using defaults")
+    channels.append("local")
+    return channels
+
+
+def get_meta_json(recipedir: str, channels: List[str]) -> str:
+    """A dict version of select package metadata"""
     msg("Rendering recipe")
     solves = api.render(recipedir, channels=channels, override_channels=True)
     if len(solves) > 1:
         msg(f"Using first of {len(solves)} solves found")
     meta = solves[0][0]
-    out = json.dumps(
+    meta_json = json.dumps(
         {
-            "name": name(meta),
-            "packages": packages(meta),
-            "source": source(meta),
-            "version": version(meta),
+            "name": get_name(meta),
+            "packages": get_packages(meta),
+            "source": get_source(meta),
+            "version": get_version(meta),
         }
     )
-    with open(Path(recipedir, "meta.json"), "w", encoding="utf-8") as f:
-        print(out, file=f)
     meta.clean()
+    return meta_json
 
 
-def msg(message: str) -> None:
-    """Write a message to stderr."""
-    print(f"=> {message}", file=sys.stderr)
-
-
-def name(meta: MetaData) -> str:
+def get_name(meta: MetaData) -> str:
     """The package name"""
     return meta.get_section("package")["name"]
 
 
-def packages(meta: MetaData) -> list:
+def get_packages(meta: MetaData) -> list:
     """A sorted list of build/host/run/test packages"""
     rrt = meta.get_rendered_recipe_text()
     pkglist = []
@@ -79,7 +73,19 @@ def packages(meta: MetaData) -> list:
     return sorted(pkglist)
 
 
-def source(meta: MetaData) -> str:
+def get_recipedir() -> str:
+    """The directory containing meta.yaml"""
+    rdname = "RECIPE_DIR"
+    try:
+        recipedir = Path(os.environ[rdname]).resolve()
+    except KeyError:
+        die(f"Export {rdname} pointing to conda-build recipe")
+    if not recipedir.is_dir():
+        die(f"Are you in the right place? No '{recipedir.name}/' was found")
+    return str(recipedir)
+
+
+def get_source(meta: MetaData) -> str:
     """The package source directory"""
     try:
         path = meta.get_section("source")["path"]
@@ -88,6 +94,20 @@ def source(meta: MetaData) -> str:
     return path
 
 
-def version(meta: MetaData) -> str:
+def get_version(meta: MetaData) -> str:
     """The package version"""
     return meta.get_section("package")["version"]
+
+
+def main() -> None:
+    """Main entry point"""
+    recipedir = get_recipedir()
+    channels = get_channels(recipedir)
+    meta_json = get_meta_json(recipedir, channels)
+    with open(Path(recipedir, "meta.json"), "w", encoding="utf-8") as f:
+        print(meta_json, file=f)
+
+
+def msg(message: str) -> None:
+    """Write a message to stderr."""
+    print(f"=> {message}", file=sys.stderr)
