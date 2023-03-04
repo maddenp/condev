@@ -1,0 +1,4 @@
+- setup.py copy devconda-shell to dev env
+- unit tests for devconda.meta
+- unit tests for prototype
+
