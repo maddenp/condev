@@ -1,6 +1,6 @@
 CHANNELS    = $(addprefix -c ,$(shell tr '\n' ' ' <$(RECIPE_DIR)/channels))
 METAJSON    = recipe/meta.json
-PYFILES     = $(shell find . -type f -name "*.py")
+PYFILES     = $(shell find src -type f -name "*.py")
 RECIPEFILES = $(addprefix $(RECIPE_DIR)/,build.sh conda_build_config.yaml meta.yaml run_test.sh)
 TARGETS     = devshell env format lint meta package test typecheck unittest
 

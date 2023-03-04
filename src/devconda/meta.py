@@ -50,7 +50,7 @@ def main() -> None:
             "version": version(meta),
         }
     )
-    with open(Path(recipedir, "meta.json"), "w", encoding="utf-8") as f:  # pylint: disable=C0103
+    with open(Path(recipedir, "meta.json"), "w", encoding="utf-8") as f:
         print(out, file=f)
     meta.clean()
 
