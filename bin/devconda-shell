@@ -31,8 +31,7 @@ devconda_rc() {
   if [[ $oldenv = false ]]; then
     echo "=> Doing editable install with setuptools"
     if ! (cd $(jq -r .source $meta) && pip install --editable .); then
-      conda deactivate
-      conda env remove -n $name
+      set +u && conda deactivate && conda env remove -n $name && set -u
       false
     fi
   fi
