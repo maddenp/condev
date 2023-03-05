@@ -17,7 +17,8 @@ test:
     - pyproject.toml
     - setup.py
     - test
-    - hello/**
+    - hello
+    - native
   requires:
     - black
     - coverage

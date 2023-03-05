@@ -17,5 +17,6 @@ setup(
         ]
     },
     name=meta["name"],
+    packages=meta["name"],
     version=meta["version"],
 )

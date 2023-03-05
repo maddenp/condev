@@ -19,7 +19,7 @@ test:
     - pyproject.toml
     - setup.py
     - test
-    - devconda/**
+    - devconda
   requires:
     - black
     - coverage
