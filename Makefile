@@ -1,10 +1,13 @@
 CHANNELS    = $(addprefix -c ,$(shell tr '\n' ' ' <$(RECIPE_DIR)/channels)) -c local
-METAJSON    = recipe/meta.json
+METAJSON    = $(RECIPE_DIR)/meta.json
 PYFILES     = $(shell find src -type f -name "*.py")
 RECIPEFILES = $(addprefix $(RECIPE_DIR)/,build.sh conda_build_config.yaml meta.yaml run_test.sh)
 TARGETS     = devshell env format lint meta package test typecheck unittest
 
 export RECIPE_DIR := $(shell realpath ./recipe)
+
+spec = $(call val,name)$(1)$(call val,version)$(1)$(call val,buildnum)
+val  = $(shell jq -r .$(1) $(METAJSON))
 
 .ONESHELL:
 .PHONY: $(TARGETS)
@@ -15,8 +18,8 @@ all:
 devshell:
 	bin/devconda-shell || true
 
-env:
-	true # conda create ...
+env: meta package
+	conda create -n $(call spec,-) $(CHANNELS) $(call spec,=)
 
 format:
 	black $(PYFILES) && isort --profile black $(PYFILES)

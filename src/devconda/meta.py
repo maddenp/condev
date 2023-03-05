@@ -21,6 +21,11 @@ def die(message: str) -> None:
     sys.exit(1)
 
 
+def get_buildnum(meta: MetaData) -> str:
+    """The package build number"""
+    return meta.get_section("build")["number"]
+
+
 def get_channels(recipedir: Path) -> List[str]:
     """The list of channels from which packages can be used"""
     msg("Getting channels")
@@ -44,6 +49,7 @@ def get_meta_json(recipedir: Path, channels: List[str]) -> str:
     meta = solves[0][0]
     meta_json = json.dumps(
         {
+            "buildnum": get_buildnum(meta),
             "name": get_name(meta),
             "packages": get_packages(meta),
             "source": get_source(meta),

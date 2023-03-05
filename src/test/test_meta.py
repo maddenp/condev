@@ -21,6 +21,7 @@ def data():
 @fixture
 def meta_json(packages):
     return {
+        "buildnum": 88,
         "name": "pkgname",
         "packages": packages,
         "source": "/source/path",
@@ -32,6 +33,9 @@ def meta_json(packages):
 def mockmeta():
     mm = Mock()
     mm.get_rendered_recipe_text.return_value = {
+        "build": {
+            "number": 88,
+        },
         "requirements": {
             "build": ["b >1.0,<2.0", "e =1.1"],
             "host": ["a >2.2", "f <3.3"],
@@ -40,6 +44,7 @@ def mockmeta():
         "test": {"requires": ["c >=6.6", "g"]},
     }
     mm.get_section = lambda section: {
+        "build": {"number": 88},
         "package": {"name": "pkgname", "version": "1.0.1"},
         "source": {"path": "/source/path"},
     }[section]
@@ -68,6 +73,10 @@ def solves(mockmeta):
 def test_die():
     with raises(SystemExit):
         meta.die("testing")
+
+
+def test_get_buildnum(mockmeta):
+    assert meta.get_buildnum(mockmeta) == 88
 
 
 def test_get_channels(data, tmpdir):
