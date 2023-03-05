@@ -33,9 +33,6 @@ def meta_json(packages):
 def mockmeta():
     mm = Mock()
     mm.get_rendered_recipe_text.return_value = {
-        "build": {
-            "number": 88,
-        },
         "requirements": {
             "build": ["b >1.0,<2.0", "e =1.1"],
             "host": ["a >2.2", "f <3.3"],
