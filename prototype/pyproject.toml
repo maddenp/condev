@@ -9,4 +9,4 @@ follow_imports = "skip"
 ignore_missing_imports = true
 
 [tool.pylint.messages_control]
-disable = ["C0103", "C0209"]
+disable = ["C0103", "C0209", "C3001"]

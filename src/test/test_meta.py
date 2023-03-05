@@ -19,6 +19,16 @@ def data():
 
 
 @fixture
+def meta_json(packages):
+    return {
+        "name": "pkgname",
+        "packages": packages,
+        "source": "/source/path",
+        "version": "1.0.1",
+    }
+
+
+@fixture
 def mockmeta():
     mm = Mock()
     mm.get_rendered_recipe_text.return_value = {
@@ -50,6 +60,11 @@ def packages():
     ]
 
 
+@fixture
+def solves(mockmeta):
+    return [[mockmeta, None], []]
+
+
 def test_die():
     with raises(SystemExit):
         meta.die("testing")
@@ -62,19 +77,12 @@ def test_get_channels(data, tmpdir):
     assert meta.get_channels(tmpdir) == ["local"]
 
 
-def test_get_meta_json(data, mockmeta, packages):
+def test_get_meta_json(data, meta_json, mockmeta, solves):
     with patch.object(meta, "api") as api:
-        solve0 = [mockmeta, None]
-        solve1 = []
-        api.render.return_value = [solve0, solve1]
+        api.render.return_value = solves
         channels = ["c1", "c2"]
         x = meta.json.loads(meta.get_meta_json(recipedir=data, channels=channels))
-        assert x == {
-            "name": "pkgname",
-            "packages": packages,
-            "source": "/source/path",
-            "version": "1.0.1",
-        }
+        assert x == meta_json
         api.render.assert_called_once_with(data, channels=channels, override_channels=True)
         mockmeta.clean.assert_called_once()
 
@@ -97,13 +105,30 @@ def test_get_recipedir(tmpdir):
         with raises(SystemExit):
             meta.get_recipedir()
     # Test case where RECIPE_DIR is set and is a directory:
-    with patch.object(meta.os, "environ", new={"RECIPE_DIR": Path(tmpdir)}):
+    with patch.object(meta.os, "environ", new={"RECIPE_DIR": tmpdir}):
         assert meta.get_recipedir() == tmpdir
 
 
 def test_get_source(mockmeta):
+    # Test case where source path is set:
     assert meta.get_source(mockmeta) == "/source/path"
+    # Test case where source path is not set:
+    badmeta = lambda section: {"source": {}}[section]
+    with raises(SystemExit):
+        meta.get_source(badmeta)
 
 
 def test_get_version(mockmeta):
     assert meta.get_version(mockmeta) == "1.0.1"
+
+
+def test_main(meta_json, solves, tmpdir):
+    with patch.object(meta.os, "environ", new={"RECIPE_DIR": tmpdir}):
+        with patch.object(meta, "api") as api:
+            api.render.return_value = solves
+            meta.main()
+            api.render.assert_called_once()
+    meta_json_path = Path(tmpdir, "meta.json")
+    assert meta_json_path.is_file()
+    with open(meta_json_path, "r", encoding="utf-8") as f:
+        assert meta.json.load(f) == meta_json
