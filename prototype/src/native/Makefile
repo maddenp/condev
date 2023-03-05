@@ -4,7 +4,7 @@ SRCS = $(wildcard *.c)
 
 .PHONY: all clean install
 
-all: $(OBJS)
+all: $(LIB)
 
 clean:
 	$(RM) $(LIB) $(OBJS)
