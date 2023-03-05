@@ -4,6 +4,7 @@ package:
 source:
   path: ../src
 build:
+  include_recipe: false
   number: 0
 requirements:
   build:
@@ -13,10 +14,11 @@ requirements:
     - conda-verify 3.1.*
     - jq
     - make >=3.8
-    - python {{ python }}
 test:
   source_files:
+    - pyproject.toml
     - setup.py
+    - test
     - devconda/**
   requires:
     - black

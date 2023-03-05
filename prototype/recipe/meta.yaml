@@ -4,6 +4,7 @@ package:
 source:
   path: ../src
 build:
+  include_recipe: false
   number: 0
 requirements:
   build:
@@ -13,7 +14,9 @@ requirements:
     - python {{ python }}
 test:
   source_files:
+    - pyproject.toml
     - setup.py
+    - test
     - hello/**
   requires:
     - black

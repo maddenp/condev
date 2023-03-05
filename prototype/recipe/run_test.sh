@@ -1,11 +1,17 @@
 #!/bin/bash -eu
 
 lint() {
-  (set -eux && pylint ${pyfiles[*]})
+  (
+    set -eux
+    pylint ${pyfiles[*]}
+  )
 }
 
 typecheck() {
-  (set -eux && mypy --install-types ${pyfiles[*]})
+  (
+    set -eux
+    mypy --install-types ${pyfiles[*]}
+  )
 }
 
 unittest() {
