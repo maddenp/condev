@@ -19,7 +19,7 @@ devshell:
 	bin/devconda-shell || true
 
 env: meta package
-	conda create -n $(call spec,-) $(CHANNELS) $(call spec,=)
+	conda create -y -n $(call spec,-) $(CHANNELS) $(call spec,=)
 
 format:
 	black $(PYFILES) && isort --profile black $(PYFILES)
