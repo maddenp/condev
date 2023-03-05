@@ -1,4 +1,4 @@
-static char* s = "World";
+static char* s = "world";
 
 char* world() {
   return s;

@@ -3,9 +3,15 @@
 set -eu
 
 devconda_rc() {
-  local exists meta name
-  test -z "${RECIPE_DIR:-}" && echo "Set RECIPE_DIR or run 'make devshell'" && exit 1
+  local meta name oldenv
   test -e ~/.bashrc && source ~/.bashrc
+  if [[ -z "${RECIPE_DIR:-}" ]]; then
+    export RECIPE_DIR=$(realpath ./recipe)
+    echo "=> RECIPE_DIR not set, trying $RECIPE_DIR"
+  else
+    echo "=> Recipe directory is $RECIPE_DIR"
+  fi
+  test ! -e $RECIPE_DIR/meta.yaml && echo "=> No meta.yaml found in $RECIPE_DIR" && false
   source $(realpath $(dirname $CONDA)/../etc/profile.d/conda.sh)
   conda activate
   echo "=> Preparing development environment"
@@ -13,18 +19,22 @@ devconda_rc() {
   meta=$(realpath $PWD/recipe/meta.json)
   name=${DEV_ENV_PREFIX:-DEV}-$(jq -r .name $meta)
   if conda env list | grep -q "^$name "; then
-    exists=true
+    oldenv=true
     echo "=> Found existing environment $name"
   else
-    exists=false
+    oldenv=false
     echo "=> Creating environment $name"
     conda create -y -n $name --file <( jq -r .packages[] $meta ) --repodata-fn repodata.json
   fi
   echo "=> Activating environment $name"
   set +u && conda activate $name && set -u
-  if [[ $exists = false ]]; then
+  if [[ $oldenv = false ]]; then
     echo "=> Doing editable install with setuptools"
-    (cd $(jq -r .source $meta) && pip install --editable .)
+    if ! (cd $(jq -r .source $meta) && pip install --editable .); then
+      conda deactivate
+      conda env remove -n $name
+      false
+    fi
   fi
   echo "=> Development environment active (type 'exit' when finished)"
   unset -f devconda_rc devconda_shell

@@ -1,5 +1,2 @@
 - flesh out prototype
 - write README.md
-- let devconda-shell try to use ./recipe as a fallback
-- have devconda-shell 'conda env remove' upon failure
-
