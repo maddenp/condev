@@ -56,9 +56,9 @@ def test_die():
 
 
 def test_get_channels(data, tmpdir):
-    # Use mock recipe dir *with* a channels file:
+    # Test case with a channels file:
     assert meta.get_channels(data) == ["foo", "bar", "local"]
-    # Use mock recipe dir *without* a channels file:
+    # Test case without a channels file:
     assert meta.get_channels(tmpdir) == ["local"]
 
 
@@ -87,8 +87,18 @@ def test_get_packages(mockmeta, packages):
     assert meta.get_packages(mockmeta) == packages
 
 
-def test_get_recipedir():
-    assert 2 + 2 == 5
+def test_get_recipedir(tmpdir):
+    # Test case where RECIPE_DIR is not set in environment:
+    with patch.object(meta.os, "environ", new={}):
+        with raises(SystemExit):
+            meta.get_recipedir()
+    # Test case where RECIPE_DIR is set but is not a directory:
+    with patch.object(meta.os, "environ", new={"RECIPE_DIR": Path(tmpdir, "no-such-dir")}):
+        with raises(SystemExit):
+            meta.get_recipedir()
+    # Test case where RECIPE_DIR is set and is a directory:
+    with patch.object(meta.os, "environ", new={"RECIPE_DIR": Path(tmpdir)}):
+        assert meta.get_recipedir() == tmpdir
 
 
 def test_get_source(mockmeta):

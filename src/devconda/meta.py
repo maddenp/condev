@@ -81,7 +81,7 @@ def get_recipedir() -> Path:
     except KeyError:
         die(f"Export {rdname} pointing to conda-build recipe")
     if not recipedir.is_dir():
-        die(f"Are you in the right place? No '{recipedir.name}/' was found")
+        die(f"Recipe directory '{recipedir}/' was not found")
     return recipedir
 
 
