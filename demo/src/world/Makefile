@@ -1,4 +1,4 @@
-LIB  = libworld.a
+LIB  = libworld.so
 OBJS = $(SRCS:.c=.o)
 SRCS = $(wildcard *.c)
 
@@ -13,7 +13,7 @@ install: $(LIB)
 	cp -v $(LIB) $(PREFIX)/lib
 
 $(LIB): $(OBJS)
-	$(AR) -crs $(LIB) $(OBJS)
+	$(CC) -shared -o $(LIB) $(OBJS)
 
 %.o: %.c
 	$(CC) -c $<
