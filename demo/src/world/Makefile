@@ -13,7 +13,7 @@ install: $(LIB)
 	cp -v $(LIB) $(PREFIX)/lib
 
 $(LIB): $(OBJS)
-	$(CC) -shared -o $(LIB) $(OBJS)
+	$(CC) $(CFLAGS) -shared -o $(LIB) $(OBJS)
 
 %.o: %.c
-	$(CC) -c $<
+	$(CC) $(CFLAGS) -c $<

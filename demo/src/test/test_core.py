@@ -21,4 +21,8 @@ def test_hello(hello):
 
 def test_main(capsys, hello):
     core.main()
-    assert capsys.readouterr().out == f"{hello}\n"
+    assert capsys.readouterr().out == f"{hello}, world\n"
+
+
+def test_world():
+    assert core.world() == "world"
