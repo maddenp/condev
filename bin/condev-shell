@@ -3,7 +3,7 @@
 set -eu
 
 condev_rc() {
-  local meta name oldenv
+  local meta name prefix srcdir
   test -e ~/.bashrc && source ~/.bashrc
   if [[ -z "${RECIPE_DIR:-}" ]]; then
     export RECIPE_DIR=$(realpath ./recipe)
@@ -19,21 +19,32 @@ condev_rc() {
   meta=$(realpath $PWD/recipe/meta.json)
   name=${DEV_ENV_PREFIX:-DEV}-$(jq -r .name $meta)
   if conda env list | grep -q "^$name "; then
-    oldenv=true
-    echo "=> Found existing environment $name"
+    echo "=> Activating existing environment $name"
+    set +u && conda activate $name && set -u
   else
-    oldenv=false
     echo "=> Creating environment $name"
     conda create -y -n $name --file <( jq -r .packages[] $meta ) --repodata-fn repodata.json
-  fi
-  echo "=> Activating environment $name"
-  set +u && conda activate $name && set -u
-  if [[ $oldenv = false ]]; then
-    echo "=> Doing editable install with setuptools"
-    if ! (cd $(jq -r .source $meta) && pip install --editable .); then
-      set +u && conda deactivate && conda env remove -n $name && set -u
-      false
+    srcdir=$(jq -r .source $meta)
+    if [[ -e $srcdir/setup.py ]]; then
+      echo "=> Doing editable install with setuptools"
+      if ! (cd $srcdir && pip install --editable .); then
+        set +u && conda deactivate && conda env remove -n $name
+        false
+      fi
     fi
+    echo "=> Creating [de]activation scripts"
+    prefix=$(set +u && conda activate $name && echo $CONDA_PREFIX)
+    mkdir -pv $prefix/etc/conda/{activate,deactivate}.d
+    cat <<'EOF' >$prefix/etc/conda/activate.d/devshell.sh
+test -n "${PREFIX+x}" && export CONDEV_OLD_PREFIX=$PREFIX
+export PREFIX=$CONDA_PREFIX
+EOF
+    cat <<'EOF' >$prefix/etc/conda/deactivate.d/devshell.sh
+test -n "${CONDEV_OLD_PREFIX+x}" && export PREFIX=$CONDEV_OLD_PREFIX || unset PREFIX
+unset CONDEV_OLD_PREFIX
+EOF
+    echo "=> Activating new environment $name"
+    set +u && conda activate $name && set -u
   fi
   echo "=> Development environment active (type 'exit' when finished)"
   unset -f condev_rc condev_shell
