@@ -18,7 +18,7 @@ test:
     - setup.py
     - test
     - hello
-    - native
+    - world
   requires:
     - black
     - coverage
