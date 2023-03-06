@@ -1,7 +1,6 @@
 CHANNELS    = $(addprefix -c ,$(shell tr '\n' ' ' <$(RECIPE_DIR)/channels)) -c local
 METAJSON    = $(RECIPE_DIR)/meta.json
 PYFILES     = $(shell find src -type f -name "*.py")
-RECIPEFILES = $(addprefix $(RECIPE_DIR)/,build.sh conda_build_config.yaml meta.yaml run_test.sh)
 TARGETS     = devshell env format lint meta package test typecheck unittest
 
 export RECIPE_DIR := $(shell realpath ./recipe)
@@ -27,7 +26,9 @@ format:
 lint:
 	recipe/run_test.sh lint
 
-meta: $(METAJSON)
+meta:
+	export PYTHONPATH=$(shell realpath ./src)
+	python -c "from condev.meta import *; main()"
 
 package: meta
 	conda build $(CHANNELS) --error-overlinking --override-channels $(RECIPE_DIR)
@@ -40,7 +41,3 @@ typecheck:
 
 unittest:
 	recipe/run_test.sh unittest
-
-$(METAJSON): $(RECIPEFILES)
-	export PYTHONPATH=$(shell realpath ./src)
-	python -c "from condev.meta import *; main()"
