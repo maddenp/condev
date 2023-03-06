@@ -2,53 +2,74 @@
 
 set -eu
 
-condev_rc() {
-  local meta name prefix srcdir
-  test -e ~/.bashrc && source ~/.bashrc
-  if [[ -z "${RECIPE_DIR:-}" ]]; then
-    export RECIPE_DIR=$(realpath ./recipe)
-    echo "=> RECIPE_DIR not set, trying $RECIPE_DIR"
-  else
-    echo "=> Recipe directory is $RECIPE_DIR"
+condev_activate() {
+  local name=$1
+  condev_msg "Activating environment $name"
+  set +u && conda activate $name && set -u
+  condev_msg "Development environment active (type 'exit' when finished)"
+}
+
+condev_create() {
+  local meta name srcdir
+  name=$1
+  meta=$2
+  condev_msg "Creating environment $name"
+  conda create -y -n $name --file <( jq -r .packages[] $meta ) --repodata-fn repodata.json
+  condev_activate $name
+  srcdir=$(jq -r .source $meta)
+  if [[ -e $srcdir/setup.py ]]; then
+    condev_msg "Doing editable install with setuptools"
+    if ! (cd $srcdir && pip install --editable .); then
+      set +u && conda deactivate && conda env remove -n $name
+      false
+    fi
   fi
-  test ! -e $RECIPE_DIR/meta.yaml && echo "=> No meta.yaml found in $RECIPE_DIR" && false
+  condev_scripts
+}
+
+condev_manage_recipe_dir() {
+  if [[ -z "${RECIPE_DIR:-}" ]]; then
+    condev_msg "RECIPE_DIR not set, trying $RECIPE_DIR"
+    export RECIPE_DIR=$(realpath ./recipe)
+  else
+    condev_msg "Recipe directory is $RECIPE_DIR"
+  fi
+  test ! -e $RECIPE_DIR/meta.yaml && condev_msg "No meta.yaml found in $RECIPE_DIR" && false
+}
+
+condev_msg() {
+  local msg=$1
+  echo "=> $msg"
+}
+
+condev_rc() {
+  local meta name
+  test -e ~/.bashrc && source ~/.bashrc
   source $(realpath $(dirname $CONDA)/../etc/profile.d/conda.sh)
   conda activate
-  echo "=> Preparing development environment"
+  condev_msg "Preparing development environment"
+  condev_manage_recipe_dir
   make meta
   meta=$(realpath $PWD/recipe/meta.json)
   name=${DEV_ENV_PREFIX:-DEV}-$(jq -r .name $meta)
-  if conda env list | grep -q "^$name "; then
-    echo "=> Activating existing environment $name"
-    set +u && conda activate $name && set -u
-  else
-    echo "=> Creating environment $name"
-    conda create -y -n $name --file <( jq -r .packages[] $meta ) --repodata-fn repodata.json
-    srcdir=$(jq -r .source $meta)
-    if [[ -e $srcdir/setup.py ]]; then
-      echo "=> Doing editable install with setuptools"
-      if ! (cd $srcdir && pip install --editable .); then
-        set +u && conda deactivate && conda env remove -n $name
-        false
-      fi
-    fi
-    echo "=> Creating [de]activation scripts"
-    prefix=$(set +u && conda activate $name && echo $CONDA_PREFIX)
-    mkdir -pv $prefix/etc/conda/{activate,deactivate}.d
-    cat <<'EOF' >$prefix/etc/conda/activate.d/devshell.sh
+  conda env list | grep -q "^$name " && condev_activate $name || condev_create $name $meta
+  declare -F | grep condev_ | cut -d' ' -f3 | xargs unset
+  set +eu
+}
+
+condev_scripts() {
+  local activate=$CONDA_PREFIX/etc/conda/activate.d/devshell.sh
+  condev_msg "Creating [de]activation scripts"
+  mkdir -pv $CONDA_PREFIX/etc/conda/{activate,deactivate}.d
+  cat <<'EOF' >$activate
 test -n "${PREFIX+x}" && export CONDEV_OLD_PREFIX=$PREFIX
 export PREFIX=$CONDA_PREFIX
 EOF
-    cat <<'EOF' >$prefix/etc/conda/deactivate.d/devshell.sh
+  cat <<'EOF' >$CONDA_PREFIX/etc/conda/deactivate.d/devshell.sh
 test -n "${CONDEV_OLD_PREFIX+x}" && export PREFIX=$CONDEV_OLD_PREFIX || unset PREFIX
 unset CONDEV_OLD_PREFIX
 EOF
-    echo "=> Activating new environment $name"
-    set +u && conda activate $name && set -u
-  fi
-  echo "=> Development environment active (type 'exit' when finished)"
-  unset -f condev_rc condev_shell
-  set +eu
+  source $activate
 }
 
 condev_shell() {
