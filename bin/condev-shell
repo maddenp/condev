@@ -34,7 +34,10 @@ condev_manage_recipe_dir() {
   else
     condev_msg "Recipe directory is $RECIPE_DIR"
   fi
-  test ! -e $RECIPE_DIR/meta.yaml && condev_msg "No meta.yaml found in $RECIPE_DIR" && false
+  if [[ ! -e $RECIPE_DIR/meta.yaml ]]; then
+    condev_msg "No meta.yaml found in $RECIPE_DIR"
+    false
+  fi
 }
 
 condev_msg() {
@@ -43,7 +46,7 @@ condev_msg() {
 }
 
 condev_rc() {
-  local meta name
+  local func meta name
   test -e ~/.bashrc && source ~/.bashrc
   source $(realpath $(dirname $CONDA)/../etc/profile.d/conda.sh)
   conda activate
@@ -53,7 +56,9 @@ condev_rc() {
   meta=$(realpath $PWD/recipe/meta.json)
   name=${DEV_ENV_PREFIX:-DEV}-$(jq -r .name $meta)
   conda env list | grep -q "^$name " && condev_activate $name || condev_create $name $meta
-  declare -F | grep condev_ | cut -d' ' -f3 | xargs unset
+  for func in $(declare -F | grep condev_ | cut -d' ' -f3); do
+    unset $func
+  done
   set +eu
 }
 
