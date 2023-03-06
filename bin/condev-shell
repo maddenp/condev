@@ -2,7 +2,7 @@
 
 set -eu
 
-devconda_rc() {
+condev_rc() {
   local meta name oldenv
   test -e ~/.bashrc && source ~/.bashrc
   if [[ -z "${RECIPE_DIR:-}" ]]; then
@@ -36,14 +36,14 @@ devconda_rc() {
     fi
   fi
   echo "=> Development environment active (type 'exit' when finished)"
-  unset -f devconda_rc devconda_shell
+  unset -f condev_rc condev_shell
   set +eu
 }
 
-devconda_shell() {
+condev_shell() {
   test -z "${CONDA_DEFAULT_ENV:-}" && eval "$(conda shell.bash hook)" && conda activate
   local vars=( CONDA=$CONDA_EXE )
-  env ${vars[@]} /bin/bash --rcfile <( sed -e "s/^devconda_shell$/devconda_rc/" $0 )
+  env ${vars[@]} /bin/bash --rcfile <( sed -e "s/^condev_shell$/condev_rc/" $0 )
 }
 
-devconda_shell
+condev_shell

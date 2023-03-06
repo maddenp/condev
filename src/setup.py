@@ -13,7 +13,7 @@ with open(os.path.join(os.environ["RECIPE_DIR"], "meta.json"), "r", encoding="ut
 setup(
     entry_points={
         "console_scripts": [
-            "devconda-meta = %s.meta:main" % meta["name"],
+            "condev-meta = %s.meta:main" % meta["name"],
         ]
     },
     name=meta["name"],

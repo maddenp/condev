@@ -1,5 +1,5 @@
 """
-Unit tests for devconda.meta module
+Unit tests for condev.meta module
 """
 
 # pylint: disable=missing-function-docstring
@@ -10,7 +10,7 @@ from unittest.mock import Mock, patch
 
 from pytest import fixture, raises
 
-from devconda import meta
+from condev import meta
 
 
 @fixture

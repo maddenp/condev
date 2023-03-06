@@ -1,5 +1,5 @@
 package:
-  name: devconda
+  name: condev
   version: 0.0.1
 source:
   path: ../src
@@ -19,7 +19,7 @@ test:
     - pyproject.toml
     - setup.py
     - test
-    - devconda
+    - condev
   requires:
     - black
     - coverage

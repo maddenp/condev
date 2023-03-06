@@ -16,7 +16,7 @@ all:
 	$(error Valid targets are: $(TARGETS))
 
 devshell:
-	bin/devconda-shell || true
+	bin/condev-shell || true
 
 env: meta package
 	conda create -y -n $(call spec,-) $(CHANNELS) $(call spec,=)
@@ -43,4 +43,4 @@ unittest:
 
 $(METAJSON): $(RECIPEFILES)
 	export PYTHONPATH=$(shell realpath ./src)
-	python -c "from devconda.meta import *; main()"
+	python -c "from condev.meta import *; main()"

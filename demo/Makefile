@@ -16,7 +16,7 @@ all:
 	$(error Valid targets are: $(TARGETS))
 
 devshell:
-	devconda-shell || true
+	condev-shell || true
 
 env: meta package
 	conda create -y -n $(call spec,-) $(CHANNELS) $(call spec,=)
@@ -42,4 +42,4 @@ unittest:
 	recipe/run_test.sh unittest
 
 $(METAJSON): $(RECIPEFILES)
-	devconda-meta
+	condev-meta

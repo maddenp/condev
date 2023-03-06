@@ -1,2 +1,2 @@
-# devconda
+# condev
 Creates conda development environments.
