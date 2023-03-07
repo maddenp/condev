@@ -20,6 +20,7 @@ test:
     - pyproject.toml
     - setup.py
     - test
+    - bash
     - condev
   requires:
     - black

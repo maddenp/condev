@@ -16,7 +16,7 @@ all:
 	$(error Valid targets are: $(TARGETS))
 
 devshell:
-	bin/condev-shell || true
+	src/bash/condev-shell || true
 
 env: package
 	conda create -y -n $(call spec,buildnum,-) $(CHANNELS) $(call spec,build,=)

@@ -20,5 +20,6 @@ setup(
     },
     name=pkgname,
     packages=[pkgname],
+    scripts=["bash/condev-shell"],
     version=meta["version"],
 )
