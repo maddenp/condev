@@ -6,7 +6,7 @@ TARGETS     = devshell env format lint meta package test typecheck unittest
 
 export RECIPE_DIR := $(shell realpath ./recipe)
 
-spec = $(call val,name)$(1)$(call val,version)$(1)$(call val,buildnum)
+spec = $(call val,name)$(2)$(call val,version)$(2)$(call val,$(1))
 val  = $(shell jq -r .$(1) $(METAJSON))
 
 .ONESHELL:
@@ -18,8 +18,8 @@ all:
 devshell:
 	condev-shell || true
 
-env: meta package
-	conda create -y -n $(call spec,-) $(CHANNELS) $(call spec,=)
+env: package
+	conda create -y -n $(call spec,buildnum,-) $(CHANNELS) $(call spec,build,=)
 
 format:
 	black $(PYFILES) && isort --profile black $(PYFILES)
