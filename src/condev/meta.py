@@ -21,6 +21,11 @@ def die(message: str) -> None:
     sys.exit(1)
 
 
+def get_build(meta: MetaData) -> str:
+    """The package build, possibly including hash component"""
+    return meta.info_index()["build"]
+
+
 def get_buildnum(meta: MetaData) -> str:
     """The package build number"""
     return meta.get_section("build")["number"]
@@ -43,12 +48,13 @@ def get_channels(recipedir: Path) -> List[str]:
 def get_meta_json(recipedir: Path, channels: List[str]) -> str:
     """A dict version of select package metadata"""
     msg("Rendering recipe")
-    solves = api.render(recipedir, channels=channels, override_channels=True)
-    if len(solves) > 1:
-        msg(f"Using first of {len(solves)} solves found")
-    meta = solves[0][0]
+    variants = api.render(recipedir, channels=channels, override_channels=True)
+    if len(variants) > 1:
+        msg(f"Using first of {len(variants)} variants found")
+    meta = variants[0][0]
     meta_json = json.dumps(
         {
+            "build": get_build(meta),
             "buildnum": get_buildnum(meta),
             "name": get_name(meta),
             "packages": get_packages(meta),

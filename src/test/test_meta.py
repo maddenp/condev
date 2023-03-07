@@ -21,6 +21,7 @@ def data():
 @fixture
 def meta_json(packages):
     return {
+        "build": "abcd_88",
         "buildnum": 88,
         "name": "pkgname",
         "packages": packages,
@@ -45,6 +46,7 @@ def mockmeta():
         "package": {"name": "pkgname", "version": "1.0.1"},
         "source": {"path": "/source/path"},
     }[section]
+    mm.info_index = lambda: {"build": "abcd_88"}
     return mm
 
 
@@ -70,6 +72,10 @@ def solves(mockmeta):
 def test_die():
     with raises(SystemExit):
         meta.die("testing")
+
+
+def test_get_build(mockmeta):
+    assert meta.get_build(mockmeta) == "abcd_88"
 
 
 def test_get_buildnum(mockmeta):
