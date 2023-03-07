@@ -3,6 +3,8 @@ A Python/C hello-world demo
 """
 
 import ctypes
+import json
+from importlib.resources import read_text
 
 
 def hello() -> str:
@@ -12,7 +14,8 @@ def hello() -> str:
 
 def main() -> None:
     """Main entry point"""
-    print(", ".join([hello(), world()]))
+    sep = json.loads(read_text("hello.resources", "conf.json"))["separator"]
+    print(f"{sep} ".join([hello(), world()]))
 
 
 def world() -> str:
