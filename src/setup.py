@@ -10,15 +10,15 @@ from setuptools import setup  # type: ignore
 with open(os.path.join(os.environ["RECIPE_DIR"], "meta.json"), "r", encoding="utf-8") as f:
     meta = json.load(f)
 
+pkgname = meta["name"]
+
 setup(
     entry_points={
         "console_scripts": [
-            "condev-meta = %s.meta:main" % meta["name"],
+            "condev-meta = %s.meta:main" % pkgname,
         ]
     },
-    name=meta["name"],
-    packages=[
-        meta["name"],
-    ],
+    name=pkgname,
+    packages=[pkgname],
     version=meta["version"],
 )

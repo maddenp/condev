@@ -8,9 +8,10 @@ build:
   number: 0
 requirements:
   build:
-    - python {{ python }}
+    - make >=4.3
     - {{ compiler('c') }}
-  run:
+  host:
+    - pip
     - python {{ python }}
 test:
   source_files:
