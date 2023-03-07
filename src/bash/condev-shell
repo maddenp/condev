@@ -1,0 +1,86 @@
+#!/bin/bash
+
+set -eu
+
+condev_activate() {
+  local name=$1
+  condev_msg "Activating environment $name"
+  set +u && conda activate $name && set -u
+  condev_msg "Development environment active (type 'exit' when finished)"
+}
+
+condev_create() {
+  local meta name srcdir
+  name=$1
+  meta=$2
+  condev_msg "Creating environment $name"
+  conda create -y -n $name --file <( jq -r .packages[] $meta ) --repodata-fn repodata.json
+  condev_activate $name
+  srcdir=$(jq -r .source $meta)
+  if [[ -e $srcdir/setup.py ]]; then
+    condev_msg "Doing editable install with setuptools"
+    if ! (cd $srcdir && pip install --editable .); then
+      set +u && conda deactivate && conda env remove -n $name
+      false
+    fi
+  fi
+  condev_scripts
+}
+
+condev_manage_recipe_dir() {
+  if [[ -z "${RECIPE_DIR:-}" ]]; then
+    condev_msg "RECIPE_DIR not set, trying $RECIPE_DIR"
+    export RECIPE_DIR=$(realpath ./recipe)
+  else
+    condev_msg "Recipe directory is $RECIPE_DIR"
+  fi
+  if [[ ! -e $RECIPE_DIR/meta.yaml ]]; then
+    condev_msg "No meta.yaml found in $RECIPE_DIR"
+    false
+  fi
+}
+
+condev_msg() {
+  local msg=$1
+  echo "=> $msg"
+}
+
+condev_rc() {
+  local func meta name
+  test -e ~/.bashrc && source ~/.bashrc
+  source $(realpath $(dirname $CONDA)/../etc/profile.d/conda.sh)
+  conda activate
+  condev_msg "Preparing development environment"
+  condev_manage_recipe_dir
+  make meta
+  meta=$(realpath $PWD/recipe/meta.json)
+  name=${DEV_ENV_PREFIX:-DEV}-$(jq -r .name $meta)
+  conda env list | grep -q "^$name " && condev_activate $name || condev_create $name $meta
+  for func in $(declare -F | grep condev_ | cut -d' ' -f3); do
+    unset $func
+  done
+  set +eu
+}
+
+condev_scripts() {
+  local activate=$CONDA_PREFIX/etc/conda/activate.d/devshell.sh
+  condev_msg "Creating [de]activation scripts"
+  mkdir -pv $CONDA_PREFIX/etc/conda/{activate,deactivate}.d
+  cat <<'EOF' >$activate
+test -n "${PREFIX+x}" && export CONDEV_OLD_PREFIX=$PREFIX
+export PREFIX=$CONDA_PREFIX
+EOF
+  cat <<'EOF' >$CONDA_PREFIX/etc/conda/deactivate.d/devshell.sh
+test -n "${CONDEV_OLD_PREFIX+x}" && export PREFIX=$CONDEV_OLD_PREFIX || unset PREFIX
+unset CONDEV_OLD_PREFIX
+EOF
+  source $activate
+}
+
+condev_shell() {
+  test -z "${CONDA_DEFAULT_ENV:-}" && eval "$(conda shell.bash hook)" && conda activate
+  local vars=( CONDA=$CONDA_EXE )
+  env ${vars[@]} /bin/bash --rcfile <( sed -e "s/^condev_shell$/condev_rc/" $0 )
+}
+
+condev_shell

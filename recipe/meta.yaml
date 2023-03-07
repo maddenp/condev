@@ -1,0 +1,33 @@
+package:
+  name: condev
+  version: 0.0.1
+source:
+  path: ../src
+build:
+  include_recipe: false
+  number: 0
+requirements:
+  host:
+    - pip
+    - python {{ python }}
+  run:
+    - conda-build 3.23.*
+    - conda-verify 3.1.*
+    - jq
+    - make >=3.8
+test:
+  source_files:
+    - pyproject.toml
+    - setup.py
+    - test
+    - bash
+    - condev
+  requires:
+    - black
+    - coverage
+    - isort
+    - mypy
+    - pylint
+    - pytest
+about:
+  license: APACHE
