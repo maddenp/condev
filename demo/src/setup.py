@@ -19,6 +19,7 @@ setup(
         ]
     },
     name=pkgname,
+    package_data={pkgname: ["resources/conf.json"]},
     packages=[pkgname],
     version=meta["version"],
 )
