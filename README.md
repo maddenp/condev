@@ -1,5 +1,7 @@
 # condev
 
+[![ci](https://github.com/maddenp/condev/actions/workflows/ci.yml/badge.svg)](https://github.com/maddenp/condev/actions/workflows/ci.yml)
+
 Creates conda development shells and provides related convenience tooling.
 
 ## Getting Started
