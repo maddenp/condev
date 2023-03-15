@@ -1,8 +1,11 @@
 #!/bin/bash -eux
 
 f=Miniforge3-Linux-x86_64.sh
-wget https://github.com/conda-forge/miniforge/releases/latest/download/$f
+wget --no-verbose https://github.com/conda-forge/miniforge/releases/latest/download/$f
 bash $f -bfp conda
-source conda/etc/profile.d/conda.sh
-conda activate
-conda install -y anaconda-client conda-build conda-verify jq make
+(
+  set -e +ux
+  source conda/etc/profile.d/conda.sh
+  conda activate
+  conda install -qy anaconda-client conda-build conda-verify jq make
+)
