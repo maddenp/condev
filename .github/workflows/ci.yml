@@ -1,6 +1,6 @@
 name: ci
 env:
-  #ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
+  ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
   GH_TOKEN: ${{ github.token }}
 on:
   push:
@@ -9,11 +9,11 @@ on:
 jobs:
   ci:
     name: CI
-    runs-on: continuumio/miniconda3
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install tools
-        run:  .github/scripts/install-tools
+      - name: Install conda
+        run:  .github/scripts/install-conda
       - name: Make package
         run:  .github/scripts/make-package
       - name: Check tag

@@ -1,3 +1,4 @@
 #!/bin/bash -eux
 
+source conda/etc/profile.d/conda.sh
 make package

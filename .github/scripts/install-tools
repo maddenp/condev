@@ -1,3 +1,0 @@
-#!/bin/bash -eux
-
-conda install -y anaconda-client conda-build conda-verify jq make
