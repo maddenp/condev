@@ -1,0 +1,5 @@
+#!/bin/bash -eux
+
+f=recipe/meta.json
+pkg=$(jq -r .name $f)-$(jq -r .version $f)-$(jq -r .build $f)
+anaconda -t $ANACONDA_TOKEN upload $pkg
