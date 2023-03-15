@@ -13,16 +13,36 @@ The `condev` tools expect to run in a conda environment providing these programs
 - `jq` for extracting select metadata values from conda-package metadata
 - A late-model `make` for using the convenient targets defined by the `condev` `Makefile`s
 
+The next subsection provides instructions on obtaining, installing, and activating conda. The two remaining subsections describe methods for installing `condev` and its required tools into your conda installation: using a prebuilt package, and bootstrapping.
+
+### Installing conda
+
 `conda` itself may be provided by a [Miniconda](https://docs.conda.io/en/latest/miniconda.html), [Miniforge](https://github.com/conda-forge/miniforge#miniforge3), [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge), or [Anaconda](https://www.anaconda.com/) installation. Prefer one of the first three for a lightweight installation providing only what you need. Miniconda is the official distribution from Anaconda, Inc., and defaults to using their package collection. Miniforge is equivalent to Miniconda except that it defaults to using the [conda-forge](https://conda-forge.org/) package collection: A community-curated collection of high-quality packages for which all recipes are available for public inspection. Mambaforge is identical to Miniforge except that includes the [mamba](https://github.com/mamba-org/mamba) tools. If you are unsure, use Miniforge, as shown below.
 
-The bootstrap procedure below downloads the latest Miniforge installer, installs it to a `conda` subdirectory in your `condev` clone, activates the base environment in your (Bourne-family) shell, installs additional tools required by `condev`, builds the `condev` conda package, installs that package into the base environment, then verifies that the expected `condev` programs are available.
+``` bash
+wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+bash Miniforge3-Linux-x86_64.sh -bfp /desired/path/to/conda
+source /desired/path/to/conda/etc/profile.d/conda.sh
+conda activate
+```
+
+### Using a Prebuilt Package
+
+With your conda activated, the following command install the latest available `condev` package:
 
 ``` bash
-cd condev # your condev git clone
-wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
-bash Miniforge3-Linux-x86_64.sh -bfp ./conda
-source ./conda/etc/profile.d/conda.sh
-conda activate
+conda install -y -c p-madden condev
+```
+
+This also installs `conda-build`, `conda-verify`, `jq`, and `make` as dependencies required by `condev`.
+
+You can also search the `p-madden` channel for available versions with `conda search -c p-madden --override-channels condev` and install a specific version by replacing `condev` with `condev=<version>[=build]` (e.g. `condev=0.1.0=0`) in the preceding `conda install` command.
+
+### Bootstrapping
+
+With your conda activated, the following steps install required dependency packages, builds the `condev` conda package, installs that package into the base environment, then verifies that the expected `condev` programs are available:
+
+``` bash
 conda install -y conda-build conda-verify jq make
 make package
 conda install -y -c local condev=$(jq -r .version recipe/meta.json)=$(jq -r .buildnum recipe/meta.json)
