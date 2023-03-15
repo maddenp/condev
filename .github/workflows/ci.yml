@@ -1,6 +1,6 @@
 name: ci
 env:
-  ANACONDA_TOKEN: ${{ secret.ANACONDA_TOKEN }}
+  ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
   GH_TOKEN: ${{ github.token }}
 on:
   push:
