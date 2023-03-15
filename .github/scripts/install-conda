@@ -2,6 +2,6 @@
 
 f=Miniforge3-Linux-x86_64.sh
 wget https://github.com/conda-forge/miniforge/releases/latest/download/$f
-bash $f -bfp conda
-source conda/etc/profile.d/conda.sh
+bash $f -bfp /tmp.conda
+source /tmp/conda/etc/profile.d/conda.sh
 conda install -y anaconda-client conda-build conda-verify jq make
