@@ -1,6 +1,6 @@
 """
-Produce a list of build/host/run/test packages, for creation of a development
-environment, by rendering and inspecting a conda-build recipe.
+Extract select metadata from a conda recipe, writing it to a meta.json file
+alongside the source meta.yaml.
 """
 
 import json
