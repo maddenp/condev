@@ -3,4 +3,5 @@
 f=recipe/meta.json
 pkg=$(jq -r .name $f)-$(jq -r .version $f)-$(jq -r .build $f)
 source conda/etc/profile.d/conda.sh
+conda activate
 anaconda -t $ANACONDA_TOKEN upload $pkg
