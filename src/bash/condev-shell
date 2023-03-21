@@ -2,11 +2,16 @@
 
 set -eu
 
-condev_activate() {
+condev_activate_devenv() {
   local name=$1
   condev_msg "Activating environment $name"
-  set +u && conda activate $name && set -u
+  condev_activate_safe $name
   condev_msg "Development environment active (type 'exit' when finished)"
+}
+
+condev_activate_safe() {
+  local name=${1:-base}
+  set +u && conda activate $name && set -u
 }
 
 condev_create() {
@@ -15,7 +20,7 @@ condev_create() {
   meta=$2
   condev_msg "Creating environment $name"
   conda create -y -n $name --file <( jq -r .packages[] $meta ) --repodata-fn repodata.json
-  condev_activate $name
+  condev_activate_devenv $name
   srcdir=$(jq -r .source $meta)
   if [[ -e $srcdir/setup.py ]]; then
     condev_msg "Doing editable install with setuptools"
@@ -49,13 +54,13 @@ condev_rc() {
   local func meta name
   test -e ~/.bashrc && source ~/.bashrc
   source $(realpath $(dirname $CONDA)/../etc/profile.d/conda.sh)
-  conda activate
+  condev_activate_safe
   condev_msg "Preparing development environment"
   condev_manage_recipe_dir
   make meta
   meta=$(realpath $PWD/recipe/meta.json)
   name=${DEV_ENV_PREFIX:-DEV}-$(jq -r .name $meta)
-  conda env list | grep -q "^$name " && condev_activate $name || condev_create $name $meta
+  conda env list | grep -q "^$name " && condev_activate_devenv $name || condev_create $name $meta
   for func in $(declare -F | grep condev_ | cut -d' ' -f3); do
     unset $func
   done
@@ -78,7 +83,7 @@ EOF
 }
 
 condev_shell() {
-  test -z "${CONDA_DEFAULT_ENV:-}" && eval "$(conda shell.bash hook)" && conda activate
+  test -z "${CONDA_DEFAULT_ENV:-}" && eval "$(conda shell.bash hook)" && condev_activate_safe
   local vars=( CONDA=$CONDA_EXE )
   env ${vars[@]} /bin/bash --rcfile <( sed -e "s/^condev_shell$/condev_rc/" $0 )
 }
