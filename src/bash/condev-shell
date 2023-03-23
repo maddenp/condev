@@ -52,6 +52,7 @@ condev_msg() {
 
 condev_rc() {
   local func meta name
+  test -e ~/.condevrc && source ~/.condevrc
   source $(realpath $(dirname $CONDA)/../etc/profile.d/conda.sh)
   condev_activate_safe
   condev_msg "Preparing development environment"

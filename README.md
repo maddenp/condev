@@ -36,7 +36,7 @@ conda install -y -c p-madden condev
 
 This also installs `conda-build`, `conda-verify`, `jq`, and `make` as dependencies required by `condev`.
 
-You can also search the `p-madden` channel for available versions with `conda search -c p-madden --override-channels condev` and install a specific version by replacing `condev` with `condev=<version>[=build]` (e.g. `condev=0.1.3=0`) in the preceding `conda install` command.
+You can also search the `p-madden` channel for available versions with `conda search -c p-madden --override-channels condev` and install a specific version by replacing `condev` with `condev=<version>[=build]` (e.g. `condev=0.1.4=0`) in the preceding `conda install` command.
 
 ### Bootstrapping
 
@@ -60,6 +60,8 @@ If you adhere to a few conventions in the layout and configuration of your proje
 - Create a conda environment based on your project's recipe with the `make env` command
 - Execute your project's defined code-quality tests with the `make test` command (or the more granular `make lint`, `make typecheck`, and `make unittest` commands)
 - Auto-format your Python code with the `make format` command
+
+The Bash shell created by `make devshell` may start with only a subset of the host shell's environment. If a `.condevrc` file exists in your home directory, it will be sourced to do any environment setup you require. For example, you might create a `~/.condevrc` file with the content `source ~/.bashrc`.
 
 ## Demo
 
