@@ -36,7 +36,7 @@ conda install -y -c maddenp condev
 
 This also installs `conda-build`, `conda-verify`, `jq`, and `make` as dependencies required by `condev`.
 
-You can also search the `maddenp` channel for available versions with `conda search -c maddenp --override-channels condev` and install a specific version by replacing `condev` with `condev=<version>[=build]` (e.g. `condev=0.1.4=0`) in the preceding `conda install` command.
+You can also search the `maddenp` channel for available versions with `conda search -c maddenp --override-channels condev` and install a specific version by replacing `condev` with `condev=<version>[=build]` (e.g. `condev=0.1.5=0`) in the preceding `conda install` command.
 
 ### Bootstrapping
 
