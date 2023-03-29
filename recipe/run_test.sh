@@ -9,7 +9,7 @@ cli() {
       condev-shell
     )
     for x in ${clis[*]}; do
-      (set -eux && which $x)
+      which $x
     done
   )
   echo OK
