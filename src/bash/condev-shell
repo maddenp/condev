@@ -18,10 +18,10 @@ condev_create() {
   local meta name srcdir
   name=$1
   meta=$2
+  srcdir=$(jq -r .source $meta)
   condev_msg "Creating environment $name"
   conda create -y -n $name --file <( jq -r .packages[] $meta ) --repodata-fn repodata.json
   condev_activate_devenv $name
-  srcdir=$(jq -r .source $meta)
   if [[ -e $srcdir/setup.py ]]; then
     condev_msg "Doing editable install with setuptools"
     if ! (cd $srcdir && pip install --editable .); then
