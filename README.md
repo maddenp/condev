@@ -6,14 +6,7 @@ Creates conda development shells and provides related convenience tooling.
 
 ## Getting Started
 
-The `condev` tools expect to run in a conda environment providing these programs:
-
-- `conda` itself
-- `conda-build` and `conda-verify` for building conda packages and interpreting their metadata
-- `jq` for extracting select metadata values from conda-package metadata
-- A late-model `make` for using the convenient targets defined by the `condev` `Makefile`s
-
-The next subsection provides instructions on obtaining, installing, and activating conda. The two remaining subsections describe methods for installing `condev` and its required tools into your conda installation: using a prebuilt package, and bootstrapping.
+The following subsection provides instructions on obtaining, installing, and activating conda. The two remaining subsections describe two methods for installing `condev` and its required tools into your conda installation: 1. Using a prebuilt package, or 2. Bootstrapping.
 
 ### Installing conda
 
@@ -34,7 +27,11 @@ With your conda activated, the following command install the latest available `c
 conda install -y -c maddenp condev
 ```
 
-This also installs `conda-build`, `conda-verify`, `jq`, and `make` as dependencies required by `condev`.
+This also installs dependency packages providing:
+
+- `conda-build` and `conda-verify` for building conda packages and interpreting their metadata
+- `jq` for extracting select metadata values from conda-package metadata
+- A late-model `make` for using the convenient targets defined by the `condev` `Makefile`s
 
 You can also search the `maddenp` channel for available versions with `conda search -c maddenp --override-channels condev` and install a specific version by replacing `condev` with `condev=<version>[=build]` (e.g. `condev=0.1.5=0`) in the preceding `conda install` command.
 
