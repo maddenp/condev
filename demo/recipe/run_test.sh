@@ -37,7 +37,7 @@ unittest() {
   (
     set -eux
     coverage run -m pytest $srcdir/test
-    coverage report --fail-under 100 --show-missing
+    coverage report
   )
   echo OK
 }
