@@ -28,7 +28,7 @@ typecheck() {
   echo Running typechecker:
   (
     set -eux
-    mypy --install-types ${pyfiles[*]}
+    mypy --install-types --non-interactive ${pyfiles[*]}
   )
   echo OK
 }
