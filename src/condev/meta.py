@@ -58,7 +58,6 @@ def get_meta_json(recipedir: Path, channels: List[str]) -> str:
             "buildnum": get_buildnum(meta),
             "name": get_name(meta),
             "packages": get_packages(meta),
-            "source": get_source(meta),
             "version": get_version(meta),
         }
     )
@@ -95,15 +94,6 @@ def get_recipedir() -> Path:
     if not recipedir.is_dir():
         die(f"Recipe directory '{recipedir}/' was not found")
     return recipedir
-
-
-def get_source(meta: MetaData) -> str:
-    """The package source directory"""
-    try:
-        path = meta.get_section("source")["path"]
-    except Exception:  # pylint: disable=W0718
-        die("Found no single source directory for this package")
-    return path
 
 
 def get_version(meta: MetaData) -> str:
