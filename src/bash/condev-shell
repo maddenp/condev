@@ -15,20 +15,22 @@ condev_activate_safe() {
 }
 
 condev_create() {
-  local meta name pkgs srcdir
+  local meta name pkgs setup
   name=$1
   meta=$2
-  srcdir=$(jq -r .source $meta)
+  setup=src/setup.py
   condev_msg "Creating environment $name"
   pkgs=( $(jq -r .packages[] $meta | sed -e "s/^/'/" -e "s/$/'/" -e "s/  *//" | tr "\n" " ") )
   conda create -y -n $name --repodata-fn repodata.json ${pkgs[*]}
   condev_activate_devenv $name
-  if [[ -e $srcdir/setup.py ]]; then
+  if [[ -e $setup ]]; then
     condev_msg "Doing editable install with setuptools"
-    if ! (cd $srcdir && pip install --editable .); then
+    if ! pip install --editable $(dirname $setup); then
       set +u && conda deactivate && conda env remove -n $name
       false
     fi
+  else
+    condev_msg "Missing $setup, skipping editable install"
   fi
   condev_scripts
 }

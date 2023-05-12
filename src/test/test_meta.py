@@ -25,7 +25,6 @@ def meta_json(packages):
         "buildnum": 88,
         "name": "pkgname",
         "packages": packages,
-        "source": "/source/path",
         "version": "1.0.1",
     }
 
@@ -44,7 +43,6 @@ def mockmeta():
     mm.get_section = lambda section: {
         "build": {"number": 88},
         "package": {"name": "pkgname", "version": "1.0.1"},
-        "source": {"path": "/source/path"},
     }[section]
     mm.info_index = lambda: {"build": "abcd_88"}
     return mm
@@ -119,15 +117,6 @@ def test_get_recipedir(tmpdir):
     # Test case where RECIPE_DIR is set and is a directory:
     with patch.object(meta.os, "environ", new={"RECIPE_DIR": tmpdir}):
         assert meta.get_recipedir() == tmpdir
-
-
-def test_get_source(mockmeta):
-    # Test case where source path is set:
-    assert meta.get_source(mockmeta) == "/source/path"
-    # Test case where source path is not set:
-    badmeta = lambda section: {"source": {}}[section]
-    with raises(SystemExit):
-        meta.get_source(badmeta)
 
 
 def test_get_version(mockmeta):
