@@ -5,7 +5,7 @@ source:
   path: ../src
 build:
   include_recipe: false
-  number: 1 # <- RESET TO 0 WHEN INCREMENTING VERSION
+  number: 0
 requirements:
   host:
     - pip
