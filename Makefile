@@ -22,7 +22,7 @@ env: package
 	conda create -y -n $(call spec,buildnum,-) $(CHANNELS) $(call spec,build,=)
 
 format:
-	black $(PYFILES) && isort --profile black $(PYFILES)
+	@black $(PYFILES) && isort --profile black $(PYFILES)
 
 lint:
 	recipe/run_test.sh lint

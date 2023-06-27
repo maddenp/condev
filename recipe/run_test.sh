@@ -1,7 +1,7 @@
 #!/bin/bash -eu
 
 cli() {
-  echo Testing CLI programs:
+  echo Testing CLI programs...
   (
     set -eu
     clis=(
@@ -16,27 +16,27 @@ cli() {
 }
 
 lint() {
-  echo Running linter:
+  echo Running linter...
   (
-    set -eux
+    set -eu
     pylint ${pyfiles[*]}
   )
   echo OK
 }
 
 typecheck() {
-  echo Running typechecker:
+  echo Running typechecker...
   (
-    set -eux
+    set -eu
     mypy --install-types --non-interactive ${pyfiles[*]}
   )
   echo OK
 }
 
 unittest() {
-  echo Running unit tests:
+  echo Running unit tests...
   (
-    set -eux
+    set -eu
     coverage run -m pytest -v $srcdir/test
     coverage report
   )

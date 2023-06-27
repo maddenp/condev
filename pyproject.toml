@@ -14,3 +14,9 @@ ignore_missing_imports = true
 
 [tool.pylint.messages_control]
 disable = ["C0103", "C0209", "C3001"]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+  "ignore::DeprecationWarning:conda.*",
+  "ignore::PendingDeprecationWarning:conda.*"
+]
