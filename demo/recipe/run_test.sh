@@ -36,7 +36,9 @@ unittest() {
   echo Running unit tests...
   (
     set -eu
-    coverage run -m pytest -v $srcdir/test
+    testdir=$srcdir/tests
+    export PYTHONPATH=$testdir
+    coverage run -m pytest -v $testdir
     coverage report
   )
   echo OK

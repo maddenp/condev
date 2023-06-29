@@ -22,6 +22,7 @@ env: package
 	conda create -y -n $(call spec,buildnum,-) $(CHANNELS) $(call spec,build,=)
 
 format:
+	@echo Running formatters...
 	@black $(PYFILES) && isort --profile black $(PYFILES)
 
 lint:
