@@ -39,7 +39,7 @@ unittest() {
     testdir=$srcdir/tests
     export PYTHONPATH=$testdir
     coverage run -m pytest -v $testdir
-    coverage report
+    coverage report --omit="$testdir/*"
   )
   echo OK
 }
