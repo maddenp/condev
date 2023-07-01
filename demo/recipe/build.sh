@@ -1,7 +1,10 @@
 set -eux
-# Copy tool config to support test run during packaging:
-cp -v $(realpath $RECIPE_DIR/../pyproject.toml) .
+# Install Python code:
+python -m pip install -vv .
 # Install native code:
 (cd world && make install)
-# Install Python code:
-python -m pip install . -vv
+# Copy files needed during test phase:
+dst=../test_files
+mkdir -pv $dst
+mv -v $PKG_NAME $dst/
+cp -v $SRC_DIR/pyproject.toml $dst/

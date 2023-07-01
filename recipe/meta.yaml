@@ -17,12 +17,6 @@ requirements:
     - jq
     - make >=3.8
 test:
-  source_files:
-    - pyproject.toml
-    - setup.py
-    - test
-    - bash
-    - condev
   requires:
     - black
     - coverage

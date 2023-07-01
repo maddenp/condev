@@ -14,12 +14,6 @@ requirements:
     - pip
     - python {{ python }}
 test:
-  source_files:
-    - pyproject.toml
-    - setup.py
-    - test
-    - hello
-    - world
   requires:
     - black
     - coverage

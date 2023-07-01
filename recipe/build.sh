@@ -1,3 +1,8 @@
 set -eux
-cp -v $(realpath $RECIPE_DIR/../pyproject.toml) .
-python -m pip install . -vv
+# Install Python code:
+python -m pip install -vv .
+# Copy files needed during test phase:
+dst=../test_files
+mkdir -pv $dst
+mv -v $PKG_NAME $dst/
+cp -v $SRC_DIR/pyproject.toml $dst/
