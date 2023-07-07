@@ -18,11 +18,11 @@ all:
 devshell:
 	src/bash/condev-shell || true
 
-env: package
+env: meta package
 	conda create -y -n $(call spec,buildnum,-) $(CHANNELS) $(call spec,build,=)
 
 format:
-	@echo Running formatters...
+	@echo "=> Running formatters"
 	@black $(PYFILES) && isort --profile black $(PYFILES)
 
 lint:
