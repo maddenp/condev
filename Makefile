@@ -18,7 +18,7 @@ all:
 devshell:
 	src/bash/condev-shell || true
 
-env: meta package
+env: package
 	conda create -y -n $(call spec,buildnum,-) $(CHANNELS) $(call spec,build,=)
 
 format:

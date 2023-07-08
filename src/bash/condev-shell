@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -eu
-
 condev_activate_devenv() {
   local name=$1
   condev_msg "Activating environment $name"
@@ -37,8 +35,8 @@ condev_create() {
 
 condev_manage_recipe_dir() {
   if [[ -z "${RECIPE_DIR:-}" ]]; then
-    condev_msg "RECIPE_DIR not set, trying $RECIPE_DIR"
     export RECIPE_DIR=$(realpath ./recipe)
+    condev_msg "RECIPE_DIR not set, trying $RECIPE_DIR"
   else
     condev_msg "Recipe directory is $RECIPE_DIR"
   fi
@@ -54,6 +52,7 @@ condev_msg() {
 }
 
 condev_rc() {
+  set -eu
   local func meta name
   test -e ~/.condevrc && source ~/.condevrc
   source $(realpath $(dirname $CONDA)/../etc/profile.d/conda.sh)
@@ -86,6 +85,7 @@ EOF
 }
 
 condev_shell() {
+  set -eu
   test -z "${CONDA_DEFAULT_ENV:-}" && eval "$(conda shell.bash hook)" && condev_activate_safe
   local vars=( CONDA=$CONDA_EXE )
   env ${vars[@]} /bin/bash --rcfile <( sed -e "s/^condev_shell$/condev_rc/" $0 )

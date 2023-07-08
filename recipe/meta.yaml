@@ -1,12 +1,12 @@
 package:
   name: condev
-  version: 0.1.7
+  version: 0.1.8
 source:
   path: ../src
 build:
   include_recipe: false
   noarch: python
-  number: 1 # <-- RESET TO 0 WHEN BUMPING VERSION
+  number: 0
 requirements:
   host:
     - pip
