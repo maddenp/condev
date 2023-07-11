@@ -1,6 +1,6 @@
 """
-Extract select metadata from a conda recipe, writing it to a meta.json file
-alongside the source meta.yaml.
+Extract select metadata from a conda recipe, writing it to a meta.json file alongside the source
+meta.yaml.
 """
 
 import json
@@ -16,23 +16,31 @@ from conda_build.metadata import MetaData  # type: ignore
 
 
 def die(message: str) -> None:
-    """Exit with error status."""
+    """
+    Exit with error status.
+    """
     msg(f"ERROR: {message}")
     sys.exit(1)
 
 
 def get_build(meta: MetaData) -> str:
-    """The package build, possibly including hash component"""
+    """
+    The package build, possibly including hash component.
+    """
     return meta.info_index()["build"]
 
 
 def get_buildnum(meta: MetaData) -> str:
-    """The package build number"""
+    """
+    The package build number.
+    """
     return meta.get_section("build")["number"]
 
 
 def get_channels(recipedir: Path) -> List[str]:
-    """The list of channels from which packages can be used"""
+    """
+    The list of channels from which packages can be used.
+    """
     msg("Getting channels")
     channels = []
     channels_file = Path(recipedir, "channels")
@@ -46,7 +54,9 @@ def get_channels(recipedir: Path) -> List[str]:
 
 
 def get_meta_json(recipedir: Path, channels: List[str]) -> str:
-    """A dict version of select package metadata"""
+    """
+    A dict version of select package metadata.
+    """
     msg("Rendering recipe")
     variants = api.render(recipedir, channels=channels, override_channels=True)
     if len(variants) > 1:
@@ -66,12 +76,16 @@ def get_meta_json(recipedir: Path, channels: List[str]) -> str:
 
 
 def get_name(meta: MetaData) -> str:
-    """The package name"""
+    """
+    The package name.
+    """
     return meta.get_section("package")["name"]
 
 
 def get_packages(meta: MetaData) -> list:
-    """A sorted list of build/host/run/test packages"""
+    """
+    A sorted list of build/host/run/test packages.
+    """
     rrt = meta.get_rendered_recipe_text()
     pkglist = []
     for pkg in {
@@ -85,7 +99,9 @@ def get_packages(meta: MetaData) -> list:
 
 
 def get_recipedir() -> Path:
-    """The directory containing meta.yaml"""
+    """
+    The directory containing meta.yaml.
+    """
     rdname = "RECIPE_DIR"
     try:
         recipedir = Path(os.environ[rdname]).resolve()
@@ -97,12 +113,16 @@ def get_recipedir() -> Path:
 
 
 def get_version(meta: MetaData) -> str:
-    """The package version"""
+    """
+    The package version.
+    """
     return meta.get_section("package")["version"]
 
 
 def main() -> None:
-    """Main entry point"""
+    """
+    Main entry point.
+    """
     recipedir = get_recipedir()
     channels = get_channels(recipedir)
     meta_json = get_meta_json(recipedir, channels)
@@ -111,5 +131,7 @@ def main() -> None:
 
 
 def msg(message: str) -> None:
-    """Write a message to stderr."""
+    """
+    Write a message to stderr.
+    """
     print(f"=> {message}", file=sys.stderr)

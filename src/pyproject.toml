@@ -4,16 +4,35 @@ line-length = 100
 [tool.coverage.report]
 fail_under = 100
 show_missing = true
+skip_covered = true
+
+[tool.docformatter]
+black = true
+make-summary-multi-line = true
+pre-summary-newline = true
+wrap-descriptions = 100
+wrap-summaries = 100
 
 [tool.isort]
 line_length = 100
 
 [tool.mypy]
+check_untyped_defs = true
 follow_imports = "skip"
 ignore_missing_imports = true
 
 [tool.pylint.messages_control]
-disable = ["C0103", "C0209", "C3001"]
+disable = [
+  "consider-using-f-string",
+  "invalid-name",
+  "too-few-public-methods",
+  "too-many-arguments",
+  "too-many-branches",
+  "too-many-locals",
+  "too-many-statements",
+  "unnecessary-lambda-assignment",
+  "use-dict-literal",
+]
 
 [tool.pytest.ini_options]
 filterwarnings = [

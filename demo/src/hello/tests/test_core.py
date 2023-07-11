@@ -1,5 +1,5 @@
 """
-Unit tests for hello.core module
+Unit tests for hello.core module.
 """
 
 # pylint: disable=missing-function-docstring

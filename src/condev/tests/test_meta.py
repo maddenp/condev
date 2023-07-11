@@ -1,5 +1,5 @@
 """
-Unit tests for condev.meta module
+Unit tests for condev.meta module.
 """
 
 # pylint: disable=missing-function-docstring

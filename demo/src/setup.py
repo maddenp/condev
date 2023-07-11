@@ -1,5 +1,5 @@
 """
-Basic setuptools configuration
+Basic setuptools configuration.
 """
 
 import json

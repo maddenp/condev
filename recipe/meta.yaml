@@ -20,6 +20,7 @@ test:
   requires:
     - black
     - coverage
+    - docformatter
     - isort
     - mypy
     - pylint
