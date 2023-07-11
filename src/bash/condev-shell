@@ -18,7 +18,7 @@ condev_create() {
   meta=$2
   setup=src/setup.py
   condev_msg "Creating environment $name"
-  pkgs=( $(jq -r .packages[] $meta | sed -e "s/^/'/" -e "s/$/'/" -e "s/  *//" | tr "\n" " ") )
+  pkgs=( $(jq -r .packages.dev[] $meta | sed -e "s/^/'/" -e "s/$/'/" -e "s/  *//" | tr "\n" " ") )
   conda create -q -y -n $name --repodata-fn repodata.json ${pkgs[*]}
   condev_activate_devenv $name
   if [[ -e $setup ]]; then

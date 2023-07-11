@@ -63,13 +63,17 @@ def get_meta_json(recipedir: Path, channels: List[str]) -> str:
         msg(f"Using first of {len(variants)} variants found")
     meta = variants[0][0]
     meta_json = json.dumps(
-        {
-            "build": get_build(meta),
-            "buildnum": get_buildnum(meta),
-            "name": get_name(meta),
-            "packages": get_packages(meta),
-            "version": get_version(meta),
-        }
+        dict(
+            build=get_build(meta),
+            buildnum=get_buildnum(meta),
+            name=get_name(meta),
+            packages=dict(
+                dev=get_packages(meta, ["build", "host", "run", "test"]),
+                run=get_packages(meta, ["run"]),
+            ),
+            version=get_version(meta),
+        ),
+        indent=2,
     )
     meta.clean()
     return meta_json
@@ -82,16 +86,19 @@ def get_name(meta: MetaData) -> str:
     return meta.get_section("package")["name"]
 
 
-def get_packages(meta: MetaData) -> list:
+def get_packages(meta: MetaData, sections: list) -> list:
     """
     A sorted list of build/host/run/test packages.
     """
     rrt = meta.get_rendered_recipe_text()
+    pkgs = [
+        *chain.from_iterable(
+            [rrt["requirements"].get(x) or [] for x in sections if x in ("build", "host", "run")]
+        ),
+        *(rrt["test"]["requires"] if "test" in sections else []),
+    ]
     pkglist = []
-    for pkg in {
-        *chain.from_iterable([rrt["requirements"].get(x) or [] for x in ("build", "host", "run")]),
-        *rrt["test"]["requires"],
-    }:
+    for pkg in pkgs:
         if " " in pkg and not any(x in pkg for x in ["<", "=", ">"]):
             pkg = re.sub(r"  *", " =", pkg)
         pkglist.append(pkg)

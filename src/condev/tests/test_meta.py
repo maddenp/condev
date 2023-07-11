@@ -19,12 +19,15 @@ def data():
 
 
 @fixture
-def meta_json(packages):
+def meta_json(packages_dev, packages_run):
     return {
         "build": "abcd_88",
         "buildnum": 88,
         "name": "pkgname",
-        "packages": packages,
+        "packages": {
+            "dev": packages_dev,
+            "run": packages_run,
+        },
         "version": "1.0.1",
     }
 
@@ -49,7 +52,7 @@ def mockmeta():
 
 
 @fixture
-def packages():
+def packages_dev():
     return [
         "a >2.2",
         "b >1.0,<2.0",
@@ -58,6 +61,14 @@ def packages():
         "e =1.1",
         "f <3.3",
         "g",
+        "h =4.4",
+    ]
+
+
+@fixture
+def packages_run():
+    return [
+        "d =5.5.*",
         "h =4.4",
     ]
 
@@ -101,8 +112,12 @@ def test_get_name(mockmeta):
     assert meta.get_name(mockmeta) == "pkgname"
 
 
-def test_get_packages(mockmeta, packages):
-    assert meta.get_packages(mockmeta) == packages
+def test_get_packages_dev(mockmeta, packages_dev):
+    assert meta.get_packages(mockmeta, ["build", "host", "run", "test"]) == packages_dev
+
+
+def test_get_packages_run(mockmeta, packages_run):
+    assert meta.get_packages(mockmeta, ["run"]) == packages_run
 
 
 def test_get_recipedir(tmpdir):
