@@ -44,4 +44,9 @@ unittest:
 
 $(METAJSON): $(RECIPEFILES)
 	export PYTHONPATH=$(shell cd ./src && pwd)
+	echo RECIPE_DIR $$RECIPE_DIR PYTHONPATH $$PYTHONPATH
+	pwd
+	ls -l
+	ls -l src
+	ls -l src/condev
 	python -c "from condev.meta import *; main()"
