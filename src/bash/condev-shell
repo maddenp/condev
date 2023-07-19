@@ -35,7 +35,7 @@ condev_create() {
 
 condev_manage_recipe_dir() {
   if [[ -z "${RECIPE_DIR:-}" ]]; then
-    export RECIPE_DIR=$(realpath ./recipe)
+    export RECIPE_DIR=$(cd ./recipe && pwd)
     condev_msg "RECIPE_DIR not set, trying $RECIPE_DIR"
   else
     condev_msg "Recipe directory is $RECIPE_DIR"
@@ -55,12 +55,12 @@ condev_rc() {
   set -eu
   local func meta name
   test -e ~/.condevrc && source ~/.condevrc
-  source $(realpath $(dirname $CONDA)/../etc/profile.d/conda.sh)
+  source $(dirname $CONDA)/../etc/profile.d/conda.sh
   condev_activate_safe
   condev_msg "Preparing development environment"
   condev_manage_recipe_dir
   make meta
-  meta=$(realpath $PWD/recipe/meta.json)
+  meta=$RECIPE_DIR/meta.json
   name=${DEV_ENV_PREFIX:-DEV}-$(jq -r .name $meta)
   conda env list | grep -q "^$name " && condev_activate_devenv $name || condev_create $name $meta
   for func in $(declare -F | grep condev_ | cut -d' ' -f3); do

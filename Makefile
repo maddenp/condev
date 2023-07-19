@@ -3,7 +3,7 @@ METAJSON    = $(RECIPE_DIR)/meta.json
 RECIPEFILES = $(addprefix $(RECIPE_DIR)/,conda_build_config.yaml meta.yaml)
 TARGETS     = devshell env format lint meta package test typecheck unittest
 
-export RECIPE_DIR := $(shell realpath ./recipe)
+export RECIPE_DIR := $(shell cd ./recipe && pwd)
 
 spec = $(call val,name)$(2)$(call val,version)$(2)$(call val,$(1))
 val  = $(shell jq -r .$(1) $(METAJSON))
@@ -43,5 +43,5 @@ unittest:
 	recipe/run_test.sh unittest
 
 $(METAJSON): $(RECIPEFILES)
-	export PYTHONPATH=$(shell realpath ./src)
+	export PYTHONPATH=$(shell cd ./src && pwd)
 	python -c "from condev.meta import *; main()"
