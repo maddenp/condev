@@ -30,18 +30,12 @@ pretty = true
 disable = [
   "consider-using-f-string",
   "invalid-name",
-  "too-few-public-methods",
-  "too-many-arguments",
-  "too-many-branches",
-  "too-many-locals",
-  "too-many-statements",
-  "unnecessary-lambda-assignment",
   "use-dict-literal",
 ]
 recursive = true
 
 [tool.pytest.ini_options]
 filterwarnings = [
-  "ignore::DeprecationWarning:conda.*",
-  "ignore::PendingDeprecationWarning:conda.*"
+  "ignore::DeprecationWarning:.*\\.ftp:",
+  "ignore::PendingDeprecationWarning:.*\\.conda_interface:",
 ]

@@ -1,7 +1,7 @@
 #!/bin/bash -eu
 
 cli() {
-  msg Testing CLI programs
+  msg Testing CLI program
   (
     set -eu
     clis=(
@@ -46,7 +46,7 @@ unittest() {
   msg OK
 }
 
-test "${CONDA_BUILD:-}" = 1 && cd ../test_files || cd $(dirname $0)/../src
+test "${CONDEV_SHELL:-}" = 1 && cd $(dirname $0)/../src || cd ../test_files
 msg Running in $PWD
 if [[ -n "${1:-}" ]]; then
   # Run single specified code-quality tool.

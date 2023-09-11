@@ -4,6 +4,7 @@ condev_activate_devenv() {
   local name=$1
   condev_msg "Activating environment $name"
   condev_activate_safe $name
+  export CONDEV_SHELL=1
   condev_msg "Development environment active (type 'exit' when finished)"
 }
 

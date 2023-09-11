@@ -12,6 +12,7 @@ requirements:
     - {{ compiler('c') }}
   host:
     - pip
+  run:
     - python {{ python }}
 test:
   requires:
