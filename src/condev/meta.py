@@ -93,9 +93,13 @@ def get_packages(meta: MetaData, sections: list) -> list:
     rrt = meta.get_rendered_recipe_text()
     pkgs = [
         *chain.from_iterable(
-            [rrt["requirements"].get(x) or [] for x in sections if x in ("build", "host", "run")]
+            [
+                rrt.get("requirements", {}).get(x, [])
+                for x in sections
+                if x in ("build", "host", "run")
+            ]
         ),
-        *(rrt["test"]["requires"] if "test" in sections else []),
+        *(rrt.get("test", {}).get("requires", []) if "test" in sections else []),
     ]
     pkglist = []
     for pkg in pkgs:

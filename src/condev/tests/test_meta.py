@@ -52,6 +52,16 @@ def mockmeta():
 
 
 @fixture
+def mockmeta_missing_sections():
+    mm = Mock()
+    mm.get_rendered_recipe_text.return_value = {
+        # "requirements" should be here but is not.
+        # "test" should be here but is not.
+    }
+    return mm
+
+
+@fixture
 def packages_dev():
     return [
         "a >2.2",
@@ -114,6 +124,11 @@ def test_get_name(mockmeta):
 
 def test_get_packages_dev(mockmeta, packages_dev):
     assert meta.get_packages(mockmeta, ["build", "host", "run", "test"]) == packages_dev
+
+
+def test_get_packages_missing_sections(mockmeta_missing_sections):
+    assert meta.get_packages(mockmeta_missing_sections, ["run"]) == []
+    assert meta.get_packages(mockmeta_missing_sections, ["test"]) == []
 
 
 def test_get_packages_run(mockmeta, packages_run):
