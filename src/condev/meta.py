@@ -58,7 +58,10 @@ def get_meta_json(recipedir: Path, channels: List[str]) -> str:
     A dict version of select package metadata.
     """
     msg("Rendering recipe")
-    variants = api.render(recipedir, channels=channels, override_channels=True)
+    variants = sorted(
+        api.render(recipedir, channels=channels, override_channels=True),
+        key=lambda x: x[0].build_id(),
+    )
     if len(variants) > 1:
         msg(f"Using first of {len(variants)} variants found")
     meta = variants[0][0]

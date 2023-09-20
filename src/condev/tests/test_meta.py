@@ -35,6 +35,7 @@ def meta_json(packages_dev, packages_run):
 @fixture
 def mockmeta():
     mm = Mock()
+    mm.build_id = lambda: 1234
     mm.get_rendered_recipe_text.return_value = {
         "requirements": {
             "build": ["b >1.0,<2.0", "e =1.1"],
@@ -85,7 +86,7 @@ def packages_run():
 
 @fixture
 def solves(mockmeta):
-    return [[mockmeta, None], []]
+    return [[mockmeta, None], [mockmeta, None]]
 
 
 def test_die():
