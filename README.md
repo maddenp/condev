@@ -33,7 +33,7 @@ This also installs dependency packages providing:
 - `jq` for extracting select metadata values from conda-package metadata
 - A late-model `make` for using the convenient targets defined by the `condev` `Makefile`s
 
-You can also search the `maddenp` channel for available versions with `conda search -c maddenp --override-channels condev` and install a specific version by replacing `condev` with `condev=<version>[=build]` (e.g. `condev=0.1.5=0`) in the preceding `conda install` command.
+You can also search the `maddenp` channel for available versions with `conda search -c maddenp --override-channels condev` and install a specific version by replacing `condev` with `condev=<version>[=build]` in the preceding `conda install` command.
 
 ### Bootstrapping
 
