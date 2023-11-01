@@ -5,6 +5,11 @@ condev_activate_devenv() {
   condev_msg "Activating environment $name"
   condev_activate_safe $name
   export CONDEV_SHELL=1
+  if [[ -n "${CONDEV_SHELL_CMD:-}" ]]; then
+    condev_msg "Running command: $CONDEV_SHELL_CMD"
+    $CONDEV_SHELL_CMD
+    exit $?
+  fi
   condev_msg "Development environment active (type 'exit' when finished)"
 }
 
