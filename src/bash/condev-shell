@@ -5,11 +5,6 @@ condev_activate_devenv() {
   condev_msg "Activating environment $name"
   condev_activate_safe $name
   export CONDEV_SHELL=1
-  if [[ -n "${CONDEV_SHELL_CMD:-}" ]]; then
-    condev_msg "Running command: $CONDEV_SHELL_CMD"
-    eval $CONDEV_SHELL_CMD
-    exit $?
-  fi
   condev_msg "Development environment active (type 'exit' when finished)"
 }
 
@@ -41,12 +36,8 @@ condev_create() {
 }
 
 condev_manage_recipe_dir() {
-  if [[ -z "${RECIPE_DIR:-}" ]]; then
-    export RECIPE_DIR=$(cd ./recipe && pwd)
-    condev_msg "RECIPE_DIR not set, trying $RECIPE_DIR"
-  else
-    condev_msg "Recipe directory is $RECIPE_DIR"
-  fi
+  test -z "${RECIPE_DIR:-}" && export RECIPE_DIR=$(cd ./recipe && pwd)
+  condev_msg "Recipe directory is $RECIPE_DIR"
   if [[ ! -e $RECIPE_DIR/meta.yaml ]]; then
     condev_msg "No meta.yaml found in $RECIPE_DIR"
     false
@@ -70,9 +61,6 @@ condev_rc() {
   meta=$RECIPE_DIR/meta.json
   name=${DEV_ENV_PREFIX:-DEV}-$(jq -r .name $meta)
   conda env list | grep -q "^$name " && condev_activate_devenv $name || condev_create $name $meta
-  for func in $(declare -F | grep condev_ | cut -d' ' -f3); do
-    unset $func
-  done
   set +eu
 }
 
@@ -97,5 +85,12 @@ condev_shell() {
   local vars=( CONDA=$CONDA_EXE )
   env ${vars[@]} /bin/bash --rcfile <( sed -e "s/^condev_shell$/condev_rc/" $0 )
 }
+
+if [[ -n "${CONDEV_SHELL_CMD:-}" ]]; then
+  CONDA=$CONDA_EXE condev_rc
+  condev_msg "Running command: $CONDEV_SHELL_CMD"
+  eval $CONDEV_SHELL_CMD
+  exit $?
+fi
 
 condev_shell
