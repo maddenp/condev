@@ -13,7 +13,6 @@ from typing import List
 
 from conda_build import api  # type: ignore
 from conda_build.metadata import MetaData  # type: ignore
-from packaging.version import Version
 
 
 def die(message: str) -> None:
@@ -59,13 +58,7 @@ def get_meta_json(recipedir: Path, channels: List[str]) -> str:
     A dict version of select package metadata.
     """
     msg("Rendering recipe")
-    variants = sorted(
-        api.render(recipedir, channels=channels, override_channels=True),
-        key=lambda v: [
-            Version(p.split("=")[1]) for p in get_packages(v[0], ["run"]) if p.startswith("python ")
-        ],
-        reverse=True,
-    )
+    variants = api.render(recipedir, channels=channels, override_channels=True)
     if len(variants) > 1:
         msg(f"Using first of {len(variants)} variants found")
     meta = variants[0][0]
