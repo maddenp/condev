@@ -36,6 +36,6 @@ recursive = true
 
 [tool.pytest.ini_options]
 filterwarnings = [
-  "ignore::DeprecationWarning:.*\\.ftp:",
+  "ignore::DeprecationWarning:.*\\.conda_interface:",
   "ignore::PendingDeprecationWarning:.*\\.conda_interface:",
 ]
