@@ -1,12 +1,12 @@
 package:
   name: condev
-  version: 0.6.4
+  version: 0.6.4 # reset build number
 source:
   path: ../src
 build:
   include_recipe: false
   noarch: python
-  number: 1 # <-- RESET TO 0 WHEN INCREMENTING VERSION
+  number: 2
 requirements:
   build:
     - pip
