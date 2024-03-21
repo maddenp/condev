@@ -26,7 +26,7 @@ condev_create() {
   if [[ -e $setup ]]; then
     condev_msg "Doing editable install with setuptools"
     if ! pip install --editable $(dirname $setup); then
-      set +u && conda deactivate && conda env remove -n $name
+      set +u && conda deactivate && conda env remove -y -n $name
       false
     fi
   else
