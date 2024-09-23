@@ -1,6 +1,6 @@
 package:
   name: condev
-  version: 0.6.5
+  version: 0.6.6
 source:
   path: ../src
 build:
@@ -12,7 +12,6 @@ requirements:
     - pip
   run:
     - conda-build
-    - conda-verify
     - jq
     - make >=3.8
     - python >=3.8
