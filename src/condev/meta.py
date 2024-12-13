@@ -1,6 +1,7 @@
 """
 Extract select metadata from a conda recipe to meta.json in the recipe directory.
 """
+
 import json
 import os
 import re
