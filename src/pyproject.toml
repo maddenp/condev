@@ -32,16 +32,9 @@ jobs = 4
 recursive = true
 
 [tool.pylint."messages control"]
-#disable = [
-#  "missing-function-docstring",
-#  "missing-module-docstring",
-#]
+disable = [
+  "missing-function-docstring",
+]
 enable = [
   "useless-suppression",
 ]
-
-#[tool.pytest.ini_options]
-#filterwarnings = [
-#  "ignore::DeprecationWarning:.*\\.conda_interface:",
-#  "ignore::PendingDeprecationWarning:.*\\.conda_interface:",
-#]

@@ -2,8 +2,7 @@
 Unit tests for hello.core module.
 """
 
-# pylint: disable=missing-function-docstring
-# pylint: disable=redefined-outer-name # for pytest fixtures
+# pylint: disable=redefined-outer-name
 
 from pytest import fixture
 

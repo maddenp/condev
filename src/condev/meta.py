@@ -28,11 +28,11 @@ def get_build(meta: MetaData) -> str:
     return str(meta.info_index()["build"])
 
 
-def get_buildnum(meta: MetaData) -> str:
+def get_buildnum(meta: MetaData) -> int:
     """
     The package build number.
     """
-    return str(meta.get_section("build")["number"])
+    return int(meta.get_section("build")["number"])
 
 
 def get_channels(recipedir: Path) -> List[str]:
