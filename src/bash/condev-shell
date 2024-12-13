@@ -58,7 +58,7 @@ condev_rc() {
   condev_activate_safe
   condev_msg "Preparing development environment"
   condev_manage_recipe_dir
-  meta=$(ls src/*/resources/meta.json)
+  meta=$(find src/*/resources/ -name meta.json)
   if [[ -f $meta ]]; then # new convention
     key=.requirements.run[],.test.requires[]
   else # old convention
