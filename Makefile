@@ -6,7 +6,7 @@ CHANNELS   = $(addprefix -c ,$(shell tr '\n' ' ' <$(RECIPE_DIR)/channels)) -c lo
 NAME       = $(call val,.name)
 VERSION    = $(call val,.version)
 METADEPS   = $(RECIPE_DIR)/meta.yaml $(METAJSON)
-METAJSON   = src/condev/resources/meta.json
+METAJSON   = $(shell ls src/*/resources/meta.json)
 TARGETS    = devshell env format lint package test typecheck unittest
 
 export RECIPE_DIR := $(RECIPE_DIR)

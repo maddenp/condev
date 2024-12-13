@@ -1,27 +1,14 @@
+{% set info = load_file_data("hello/resources/meta.json") %}
+
 package:
-  name: hello
-  version: 0.0.1
+  name: {{ info["name"] }}
+  version: {{ info["version"] }}
 source:
   path: ../src
 build:
   include_recipe: false
-  number: 0
-requirements:
-  build:
-    - make >=4.3
-    - {{ compiler('c') }}
-  host:
-    - pip
-  run:
-    - python {{ python }}
-test:
-  requires:
-    - black
-    - coverage
-    - docformatter
-    - isort
-    - mypy
-    - pylint
-    - pytest
+  number: {{ info["buildnum"] }}
+requirements: {{ info["requirements"] }}
+test: {{ info["test"] }}
 about:
   license: OTHER

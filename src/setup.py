@@ -34,7 +34,3 @@ if not os.environ.get("CONDEV_SHELL"):
 # Install.
 
 setup(**kwargs)
-
-# if os.environ.get("CONDA_BUILD"):
-#     meta = {x: os.environ["PKG_%s" % x.upper()] for x in ("name", "version")}
-# else:
