@@ -10,10 +10,10 @@ The following subsection provides instructions on obtaining, installing, and act
 
 ### Installing conda
 
-`conda` itself may be provided by a [Miniconda](https://docs.conda.io/en/latest/miniconda.html), [Miniforge](https://github.com/conda-forge/miniforge#miniforge3), [Mambaforge](https://github.com/conda-forge/miniforge#mambaforge), or [Anaconda](https://www.anaconda.com/) installation. Prefer one of the first three for a lightweight installation providing only what you need. Miniconda is the official distribution from Anaconda, Inc., and defaults to using their package collection. Miniforge is equivalent to Miniconda except that it defaults to using the [conda-forge](https://conda-forge.org/) package collection: A community-curated collection of high-quality packages for which all recipes are available for public inspection. Mambaforge is identical to Miniforge except that includes the [mamba](https://github.com/mamba-org/mamba) tools. If you are unsure, use Miniforge, as shown below.
+`conda` itself may be provided by a [Miniforge](https://github.com/conda-forge/miniforge#miniforge3), [Miniconda](https://docs.conda.io/en/latest/miniconda.html), or [Anaconda](https://www.anaconda.com/) installation. Prefer Miniforge to Miniconda to Anaconda. Miniforge is equivalent to Miniconda except that it defaults to using the [conda-forge](https://conda-forge.org/) package collection: A community-curated collection of high-quality packages for which all recipes are available for public inspection. Miniconda is the official lightweight distribution from Anaconda, Inc., and defaults to using their package collection.
 
 ``` bash
-wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+wget https://github.com/conda-forge/miniforge/releases/download/24.11.0-0/Miniforge3-Linux-x86_64.sh
 bash Miniforge3-Linux-x86_64.sh -bfp /desired/path/to/conda
 source /desired/path/to/conda/etc/profile.d/conda.sh
 conda activate
@@ -29,7 +29,7 @@ conda install -y -c maddenp condev
 
 This also installs dependency packages providing:
 
-- `conda-build` and `conda-verify` for building conda packages and interpreting their metadata
+- `conda-build` for building conda packages and interpreting their metadata
 - `jq` for extracting select metadata values from conda-package metadata
 - A late-model `make` for using the convenient targets defined by the `condev` `Makefile`s
 
@@ -40,7 +40,7 @@ You can also search the `maddenp` channel for available versions with `conda sea
 With your conda activated, the following steps install required dependency packages, builds the `condev` conda package, installs that package into the base environment, then verifies that the expected `condev` programs are available:
 
 ``` bash
-conda install -y conda-build conda-verify jq make
+conda install -y conda-build jq make
 make package
 conda install -y -c local condev=$(jq -r .version recipe/meta.json)=$(jq -r .build recipe/meta.json)
 which condev-meta condev-shell
