@@ -14,13 +14,14 @@ condev_activate_safe() {
 }
 
 condev_create() {
-  local meta name pkgs setup
-  name=$1
-  meta=$2
+  local key meta name setup
+  name="$1"
+  meta="$2"
+  key="$3"
   setup=src/setup.py
   condev_msg "Creating environment $name"
   channels="$(cat $RECIPE_DIR/channels | xargs -I@ echo -n "-c @ ")"
-  pkgs=( $(jq -r .packages.dev[] $meta | sed -e "s/^/'/" -e "s/$/'/" -e "s/  *//" | tr "\n" " ") )
+  pkgs=( $(jq -r $key $meta | sed -e "s/^/'/" -e "s/$/'/" -e "s/  *//" | tr "\n" " ") )
   conda create -q -y -n $name $channels --repodata-fn repodata.json ${pkgs[*]}
   condev_activate_devenv $name
   if [[ -e $setup ]]; then
@@ -51,16 +52,22 @@ condev_msg() {
 
 condev_rc() {
   set -eu
-  local func meta name
+  local func key meta name
   test -e ~/.condevrc && source ~/.condevrc
   source $(dirname $CONDA)/../etc/profile.d/conda.sh
   condev_activate_safe
   condev_msg "Preparing development environment"
   condev_manage_recipe_dir
-  make meta
-  meta=$RECIPE_DIR/meta.json
+  meta=src/*/resources/meta.json
+  if [[ -f $meta ]]; then # new convention
+     key=.requirements.run[],.test.requires[]
+  else # old convention
+    make meta
+    meta=$RECIPE_DIR/meta.json
+    key=.packages.dev[]
+  fi
   name=${DEV_ENV_PREFIX:-DEV}-$(jq -r .name $meta)
-  conda env list | grep -q "^$name " && condev_activate_devenv $name || condev_create $name $meta
+  conda env list | grep -q "^$name " && condev_activate_devenv $name || condev_create $name $meta $key
   set +eu
 }
 
