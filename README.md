@@ -21,7 +21,7 @@ conda activate
 
 ### Using a Prebuilt Package
 
-With your conda activated, the following command install the latest available `condev` package:
+With your conda activated, the following command installs the latest available `condev` package:
 
 ``` bash
 conda install -y -c maddenp condev
@@ -31,7 +31,7 @@ This also installs dependency packages providing:
 
 - `conda-build` for building conda packages and interpreting their metadata
 - `jq` for extracting select metadata values from conda-package metadata
-- A late-model `make` for using the convenient targets defined by the `condev` `Makefile`s
+- `make` for using the convenient targets defined by the `condev` `Makefile`s
 
 You can also search the `maddenp` channel for available versions with `conda search -c maddenp --override-channels condev` and install a specific version by replacing `condev` with `condev=<version>[=build]` in the preceding `conda install` command.
 
@@ -42,7 +42,7 @@ With your conda activated, the following steps install required dependency packa
 ``` bash
 conda install -y conda-build jq make
 make package
-conda install -y -c local condev=$(jq -r .version recipe/meta.json)=$(jq -r .build recipe/meta.json)
+conda install -y -c local condev=$(jq -r .version src/condev/resources/meta.json)=*_$(jq -r .buildnum src/condev/resources/meta.json)
 which condev-meta condev-shell
 ```
 
