@@ -60,7 +60,7 @@ condev_rc() {
   condev_manage_recipe_dir
   meta=$(find src/*/resources/ -name meta.json)
   if [[ -f $meta ]]; then # new convention
-    key=.requirements.run[],.test.requires[]
+    key=.requirements.build[],.requirements.host[],.requirements.run[],.test.requires[]
   else # old convention
     make meta
     meta=$RECIPE_DIR/meta.json
