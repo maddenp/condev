@@ -1,17 +1,16 @@
 {
   "buildnum": "0",
-  "name": "wxvx",
+  "name": "condev",
   "requirements": {
     "build": [
       "pip",
       "setuptools"
     ],
     "run": [
-      "metkit =11.0.*",
-      "parsl =2024.12.*",
-      "python >=3.9,<3.13",
-      "requests =2.32.*",
-      "uwtools =2.5.*"
+      "conda-build",
+      "jq",
+      "make",
+      "python >=3.9"
     ]
   },
   "test": {
@@ -28,5 +27,5 @@
       "pytest-xdist =3.6.*"
     ]
   },
-  "version": "0.1.0"
+  "version": "0.7.0"
 }
