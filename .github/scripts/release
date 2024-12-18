@@ -5,7 +5,9 @@ set +ux
 source conda/etc/profile.d/conda.sh
 conda activate
 set -ux
-pkg=$(meta .name)-$(meta .version)-*_$(meta .buildnum).bz2
-for x in $(find conda/conda-bld -type f -name $pkg); do
-  anaconda -t $ANACONDA_TOKEN upload $x
+pkgname=$(meta .name)-$(meta .version)-*_$(meta .buildnum).tar.bz2
+pkgs=( $(find conda/conda-bld -type f -name $pkgname) )
+test -z "${pkgs[*]}" && exit 1
+for pkg in ${pkgs[*]}; do
+  anaconda -t $ANACONDA_TOKEN upload $pkg
 done
