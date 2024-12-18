@@ -15,17 +15,20 @@ requirements:
   run:
     - conda-build
     - jq
-    - make >=3.8
+    - make
     - python >=3.9
 test:
   requires:
     - black
-    - coverage
     - docformatter
     - isort
+    - jq
+    - make
     - mypy
     - pylint
     - pytest
+    - pytest-cov
+    - pytest-xdist
 about: 
   home: https://github.com/maddenp/condev
   license: APACHE
