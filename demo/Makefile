@@ -29,6 +29,9 @@ format:
 lint:
 	recipe/run_test.sh lint
 
+machine:
+	$(MAKE) -C src/world install
+
 meta: $(METAJSON)
 
 package:
