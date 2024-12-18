@@ -2,12 +2,12 @@
 
 package:
   name: hello
-  version: 0.0.1
+  version: {{ info["version"] }}
 source:
   path: ../src
 build:
   include_recipe: false
-  number: 0
+  number: {{ info["buildnum" }}
 requirements:
   build:
     - make >=4.3

@@ -2,13 +2,13 @@
 
 package:
   name: condev
-  version: 0.6.6
+  version: {{ info["version"] }}
 source:
   path: ../src
 build:
   include_recipe: false
   noarch: python
-  number: 0
+  number: {{ info["buildnum" }}
 requirements:
   build:
     - pip
