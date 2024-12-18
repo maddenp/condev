@@ -1,14 +1,14 @@
 #!/bin/bash -eu
 
 cli() {
-  msg Testing CLI program
+  msg Testing CLI
   (
     set -eu
     clis=(
       heythere
     )
     for x in ${clis[*]}; do
-      which $x
+      (set -x && which $x)
     done
   )
   msg OK
@@ -40,14 +40,12 @@ unittest() {
   msg Running unit tests
   (
     set -eux
-    coverage run -m pytest -vv .
-    coverage report
+    pytest --cov=hello -n 1 .
   )
   msg OK
 }
 
-test "${CONDEV_SHELL:-}" = 1 && cd $(dirname $0)/../src || cd ../test_files
-msg Running in $PWD
+test "${CONDA_BUILD:-}" = 1 && cd ../test_files || cd $(dirname $0)/../src
 if [[ -n "${1:-}" ]]; then
   # Run single specified code-quality tool.
   $1

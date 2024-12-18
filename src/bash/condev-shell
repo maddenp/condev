@@ -20,7 +20,7 @@ condev_create() {
   setup=src/setup.py
   condev_msg "Creating environment $name"
   channels="$(cat $RECIPE_DIR/channels | xargs -I@ echo -n "-c @ ")"
-  pkgs=( $(jq -r .packages.dev[] $meta | sed -e "s/^/'/" -e "s/$/'/" -e "s/  *//" | tr "\n" " ") )
+  pkgs=( $(jq -r .packages.dev[] $meta | sed -e "s/  *//" | tr "\n" " ") )
   conda create -q -y -n $name $channels --repodata-fn repodata.json ${pkgs[*]}
   condev_activate_devenv $name
   if [[ -e $setup ]]; then

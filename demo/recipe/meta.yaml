@@ -1,27 +1,34 @@
+{% set info = load_file_data("hello/resources/info.json") %}
+
 package:
   name: hello
-  version: 0.0.1
+  version: {{ info["version"] }}
 source:
   path: ../src
 build:
   include_recipe: false
-  number: 0
+  number: {{ info["buildnum"] }}
 requirements:
   build:
-    - make >=4.3
+    - make
     - {{ compiler('c') }}
   host:
     - pip
+    - python
+    - setuptools
   run:
-    - python {{ python }}
+    - python
 test:
   requires:
     - black
-    - coverage
     - docformatter
     - isort
+    - jq
+    - make
     - mypy
     - pylint
     - pytest
-about:
+    - pytest-cov
+    - pytest-xdist
+about: 
   license: OTHER

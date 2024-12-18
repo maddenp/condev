@@ -1,29 +1,35 @@
+{% set info = load_file_data("condev/resources/info.json") %}
+
 package:
   name: condev
-  version: 0.6.6
+  version: {{ info["version"] }}
 source:
   path: ../src
 build:
   include_recipe: false
   noarch: python
-  number: 0
+  number: {{ info["buildnum"] }}
 requirements:
   build:
     - pip
+    - setuptools
   run:
     - conda-build
     - jq
-    - make >=3.8
-    - python >=3.8
+    - make
+    - python >=3.9
 test:
   requires:
     - black
-    - coverage
     - docformatter
     - isort
+    - jq
+    - make
     - mypy
     - pylint
     - pytest
+    - pytest-cov
+    - pytest-xdist
 about: 
   home: https://github.com/maddenp/condev
   license: APACHE

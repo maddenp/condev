@@ -2,8 +2,7 @@
 Unit tests for condev.meta module.
 """
 
-# pylint: disable=missing-function-docstring
-# pylint: disable=redefined-outer-name # for pytest fixtures
+# pylint: disable=redefined-outer-name
 
 from pathlib import Path
 from unittest.mock import Mock, patch

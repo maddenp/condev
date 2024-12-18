@@ -25,17 +25,23 @@ check_untyped_defs = true
 follow_imports = "skip"
 ignore_missing_imports = true
 pretty = true
+warn_return_any = true
 
-[tool.pylint.messages_control]
+[tool.pylint.main]
+jobs = 1
+recursive = true
+
+[tool.pylint."messages control"]
 disable = [
   "consider-using-f-string",
-  "invalid-name",
-  "use-dict-literal",
+  "missing-function-docstring",
+  "missing-module-docstring",
 ]
-recursive = true
+enable = [
+  "useless-suppression",
+]
 
 [tool.pytest.ini_options]
 filterwarnings = [
-  "ignore::DeprecationWarning:.*\\.conda_interface:",
-  "ignore::PendingDeprecationWarning:.*\\.conda_interface:",
+  "ignore::DeprecationWarning:boltons.timeutils",
 ]
