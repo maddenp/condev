@@ -1,32 +1,35 @@
-"""
-Basic setuptools configuration.
-"""
-
 import json
 import os
+import re
 
 from setuptools import find_packages, setup  # type: ignore
 
-if os.environ.get("CONDA_BUILD"):
-    meta = {x: os.environ["PKG_%s" % x.upper()] for x in ("name", "version")}
-else:
-    with open("../recipe/meta.json", "r", encoding="utf-8") as f:
-        meta = json.load(f)
+# Collect package metadata.
 
+with open("../recipe/meta.json", "r", encoding="utf-8") as f:
+    meta = json.load(f)
 name_conda = meta["name"]
 name_py = name_conda.replace("-", "_")
 
-setup(
-    entry_points={
-        "console_scripts": [
-            "heythere = %s.core:main" % name_py,
-        ]
-    },
-    name=name_conda,
-    package_data={name_py: ["resources/conf.json"]},
-    packages=find_packages(
-        exclude=["%s.tests" % name_py],
-        include=[name_py, "%s.*" % name_py],
-    ),
-    version=meta["version"],
-)
+# Define basic setup configuration.
+
+kwargs = {
+    "entry_points": {"console_scripts": ["heythere = %s.core:main" % name_py]},
+    "include_package_data": True,
+    "name": name_conda,
+    "packages": find_packages(exclude=["%s.tests" % name_py], include=[name_py, "%s.*" % name_py]),
+    "version": meta["version"],
+}
+
+# Define dependency packages for non-devshell installs.
+
+if not os.environ.get("CONDEV_SHELL"):
+    kwargs["install_requires"] = [
+        pkg.replace(" =", "==")
+        for pkg in meta["requirements"]["run"]
+        if not re.match(r"^python .*$", pkg)
+    ]
+
+# Install.
+
+setup(**kwargs)
