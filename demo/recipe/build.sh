@@ -2,7 +2,7 @@ set -eux
 # Install Python code:
 python -m pip install -vv .
 # Install machine code:
-(cd world && make install)
+make -C world install
 # Copy files needed during test phase:
 dst=../test_files
 rm -fr $dst
