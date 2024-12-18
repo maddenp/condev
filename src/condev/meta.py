@@ -1,6 +1,5 @@
 """
-Extract select metadata from a conda recipe, writing it to a meta.json file alongside the source
-meta.yaml.
+Extract select metadata from a conda recipe to meta.json in the recipe directory.
 """
 
 import json
@@ -27,14 +26,14 @@ def get_build(meta: MetaData) -> str:
     """
     The package build, possibly including hash component.
     """
-    return meta.info_index()["build"]
+    return str(meta.info_index()["build"])
 
 
-def get_buildnum(meta: MetaData) -> str:
+def get_buildnum(meta: MetaData) -> int:
     """
     The package build number.
     """
-    return meta.get_section("build")["number"]
+    return int(meta.get_section("build")["number"])
 
 
 def get_channels(recipedir: Path) -> List[str]:
@@ -63,16 +62,16 @@ def get_meta_json(recipedir: Path, channels: List[str]) -> str:
         msg(f"Using first of {len(variants)} variants found")
     meta = variants[0][0]
     meta_json = json.dumps(
-        dict(
-            build=get_build(meta),
-            buildnum=get_buildnum(meta),
-            name=get_name(meta),
-            packages=dict(
-                dev=get_packages(meta, ["build", "host", "run", "test"]),
-                run=get_packages(meta, ["run"]),
-            ),
-            version=get_version(meta),
-        ),
+        {
+            "build": get_build(meta),
+            "buildnum": get_buildnum(meta),
+            "name": get_name(meta),
+            "packages": {
+                "dev": get_packages(meta, ["build", "host", "run", "test"]),
+                "run": get_packages(meta, ["run"]),
+            },
+            "version": get_version(meta),
+        },
         indent=2,
     )
     meta.clean()
@@ -83,7 +82,7 @@ def get_name(meta: MetaData) -> str:
     """
     The package name.
     """
-    return meta.get_section("package")["name"]
+    return str(meta.get_section("package")["name"])
 
 
 def get_packages(meta: MetaData, sections: list) -> list:
@@ -127,7 +126,7 @@ def get_version(meta: MetaData) -> str:
     """
     The package version.
     """
-    return meta.get_section("package")["version"]
+    return str(meta.get_section("package")["version"])
 
 
 def main() -> None:

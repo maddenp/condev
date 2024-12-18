@@ -28,4 +28,4 @@ def world() -> str:
     """
     cworld = ctypes.CDLL("libworld.so")
     cworld.world.restype = ctypes.c_char_p
-    return cworld.world().decode()
+    return str(cworld.world().decode())

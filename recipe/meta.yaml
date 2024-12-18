@@ -1,3 +1,5 @@
+{% set info = load_file_data("condev/resources/meta.json") %}
+
 package:
   name: condev
   version: 0.6.6

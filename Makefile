@@ -1,12 +1,15 @@
-CHANNELS    = $(addprefix -c ,$(shell tr '\n' ' ' <$(RECIPE_DIR)/channels)) -c local
-METAJSON    = $(RECIPE_DIR)/meta.json
-RECIPEFILES = $(addprefix $(RECIPE_DIR)/,conda_build_config.yaml meta.yaml)
-TARGETS     = devshell env format lint meta package test typecheck unittest
+val = $(shell jq -r $(1) $(METAJSON))
 
-export RECIPE_DIR := $(shell cd ./recipe && pwd)
+RECIPE_DIR = $(shell cd ./recipe && pwd)
+BUILDNUM   = $(call val,.buildnum)
+CHANNELS   = $(addprefix -c ,$(shell tr '\n' ' ' <$(RECIPE_DIR)/channels)) -c local
+NAME       = $(call val,.name)
+VERSION    = $(call val,.version)
+METADEPS   = $(RECIPE_DIR)/meta.yaml src/condev/resources/info.json
+METAJSON   = $(RECIPE_DIR)/meta.json
+TARGETS    = devshell env format lint package test typecheck unittest
 
-spec = $(call val,name)$(2)$(call val,version)$(2)$(call val,$(1))
-val  = $(shell jq -r .$(1) $(METAJSON))
+export RECIPE_DIR := $(RECIPE_DIR)
 
 .PHONY: $(TARGETS)
 
@@ -17,13 +20,10 @@ devshell:
 	src/bash/condev-shell || true
 
 env: package
-	conda create -y -n $(call spec,buildnum,-) $(CHANNELS) $(call spec,build,=)
+	conda create -y -n $(NAME)-$(VERSION)-$(BUILDNUM) $(CHANNELS) $(NAME)=$(VERSION)=*_$(BUILDNUM)
 
 format:
-	@echo "=> Running formatters"
-	black src
-	isort src
-	cd src && docformatter . || test $$? -eq 3
+	@./format
 
 lint:
 	recipe/run_test.sh lint

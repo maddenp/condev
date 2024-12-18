@@ -1,3 +1,5 @@
+{% set info = load_file_data("hello/resources/meta.json") %}
+
 package:
   name: hello
   version: 0.0.1
