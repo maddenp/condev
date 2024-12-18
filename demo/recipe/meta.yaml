@@ -7,23 +7,26 @@ source:
   path: ../src
 build:
   include_recipe: false
-  number: {{ info["buildnum" }}
+  number: {{ info["buildnum"] }}
 requirements:
   build:
-    - make >=4.3
-    - {{ compiler('c') }}
-  host:
+    - make
     - pip
+    - setuptools
+    - {{ compiler('c') }}
   run:
-    - python {{ python }}
+    - python >=3.9
 test:
   requires:
     - black
-    - coverage
     - docformatter
     - isort
+    - jq
+    - make
     - mypy
     - pylint
     - pytest
-about:
+    - pytest-cov
+    - pytest-xdist
+about: 
   license: OTHER
