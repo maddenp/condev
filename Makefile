@@ -1,14 +1,14 @@
 val = $(shell jq -r $(1) $(METAJSON))
 
-RECIPE_DIR = $(shell cd ./recipe && pwd)
 BUILD      = $(call val,.build)
 BUILDNUM   = $(call val,.buildnum)
 CHANNELS   = $(addprefix -c ,$(shell tr '\n' ' ' <$(RECIPE_DIR)/channels)) -c local
-NAME       = $(call val,.name)
-VERSION    = $(call val,.version)
 METADEPS   = $(RECIPE_DIR)/meta.yaml src/condev/resources/info.json
 METAJSON   = $(RECIPE_DIR)/meta.json
+NAME       = $(call val,.name)
+RECIPE_DIR = $(shell cd ./recipe && pwd)
 TARGETS    = devshell env format lint package test typecheck unittest
+VERSION    = $(call val,.version)
 
 export RECIPE_DIR := $(RECIPE_DIR)
 
