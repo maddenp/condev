@@ -11,11 +11,13 @@ build:
 requirements:
   build:
     - make
-    - pip
-    - setuptools
     - {{ compiler('c') }}
+  host:
+    - pip
+    - python
+    - setuptools
   run:
-    - python >=3.9
+    - python
 test:
   requires:
     - black
