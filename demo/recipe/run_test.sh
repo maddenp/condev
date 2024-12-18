@@ -8,7 +8,7 @@ cli() {
       heythere
     )
     for x in ${clis[*]}; do
-      which $x
+      (set -x && which $x)
     done
   )
   msg OK

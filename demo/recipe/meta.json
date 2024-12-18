@@ -1,6 +1,6 @@
 {
   "build": "h920789f_0",
-  "buildnum": "0",
+  "buildnum": 0,
   "name": "hello",
   "packages": {
     "dev": [
