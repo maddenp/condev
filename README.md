@@ -78,7 +78,7 @@ This will create a conda environment with your project's build, host, run, and t
 If this were a pure-Python codebase, you could now run the `heythere` entry-point console script (defined by `src/setup.py`). Try that and see how it fails. Since this project's Python code relies on a C function (which also lives in the project, so cannot be satisfied by installing a dependency package), that needs to be build first:
 
 ``` bash
-(cd src/world && make install)
+make machine
 ```
 
 Now run `heythere` and it should succeed.
