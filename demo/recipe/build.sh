@@ -1,7 +1,7 @@
 set -eux
 # Install Python code:
 python -m pip install -vv .
-# Install native code:
+# Install machine code:
 (cd world && make install)
 # Copy files needed during test phase:
 dst=../test_files
