@@ -31,7 +31,7 @@ lint:
 
 meta: $(METAJSON)
 
-package: meta
+package:
 	conda build $(CHANNELS) --error-overlinking --override-channels $(RECIPE_DIR)
 
 test:
@@ -44,4 +44,4 @@ unittest:
 	recipe/run_test.sh unittest
 
 $(METAJSON): $(METADEPS)
-	PYTHONPATH=$(shell cd ./src && pwd) python -c "from condev.meta import *; main()"
+	PYTHONPATH=$(shell cd ./src && pwd) python -m condev.meta

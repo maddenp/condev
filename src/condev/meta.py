@@ -145,3 +145,7 @@ def msg(message: str) -> None:
     Write a message to stderr.
     """
     print(f"=> {message}", file=sys.stderr)
+
+
+if __name__ == "__main__":
+    main()
