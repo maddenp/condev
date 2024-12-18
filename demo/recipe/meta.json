@@ -1,5 +1,5 @@
 {
-  "build": "h920789f_0",
+  "build": "py312h920789f_0",
   "buildnum": 0,
   "name": "hello",
   "packages": {
@@ -17,11 +17,12 @@
       "pytest",
       "pytest-cov",
       "pytest-xdist",
-      "python >=3.9",
+      "python",
+      "python",
       "setuptools"
     ],
     "run": [
-      "python >=3.9"
+      "python"
     ]
   },
   "version": "0.1.0"
