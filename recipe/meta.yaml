@@ -1,4 +1,4 @@
-{% set info = load_file_data("condev/resources/meta.json") %}
+{% set info = load_file_data("condev/resources/info.json") %}
 
 package:
   name: condev
@@ -8,7 +8,7 @@ source:
 build:
   include_recipe: false
   noarch: python
-  number: {{ info["buildnum" }}
+  number: {{ info["buildnum"] }}
 requirements:
   build:
     - pip
@@ -16,7 +16,7 @@ requirements:
     - conda-build
     - jq
     - make >=3.8
-    - python >=3.8
+    - python >=3.9
 test:
   requires:
     - black

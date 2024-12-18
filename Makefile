@@ -1,6 +1,7 @@
 val = $(shell jq -r $(1) $(METAJSON))
 
 RECIPE_DIR = $(shell cd ./recipe && pwd)
+BUILD      = $(call val,.build)
 BUILDNUM   = $(call val,.buildnum)
 CHANNELS   = $(addprefix -c ,$(shell tr '\n' ' ' <$(RECIPE_DIR)/channels)) -c local
 NAME       = $(call val,.name)
@@ -20,7 +21,7 @@ devshell:
 	src/bash/condev-shell || true
 
 env: package
-	conda create -y -n $(NAME)-$(VERSION)-$(BUILDNUM) $(CHANNELS) $(NAME)=$(VERSION)=*_$(BUILDNUM)
+	conda create -y -n $(NAME)-$(VERSION)-$(BUILDNUM) $(CHANNELS) $(NAME)=$(VERSION)=$(BUILD)
 
 format:
 	@./format
@@ -42,5 +43,5 @@ typecheck:
 unittest:
 	recipe/run_test.sh unittest
 
-$(METAJSON): $(RECIPEFILES)
+$(METAJSON): $(METADEPS)
 	PYTHONPATH=$(shell cd ./src && pwd) python -c "from condev.meta import *; main()"

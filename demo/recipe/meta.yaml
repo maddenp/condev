@@ -1,4 +1,4 @@
-{% set info = load_file_data("hello/resources/meta.json") %}
+{% set info = load_file_data("hello/resources/info.json") %}
 
 package:
   name: hello
