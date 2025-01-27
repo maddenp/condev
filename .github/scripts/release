@@ -5,7 +5,7 @@ set +ux
 source conda/etc/profile.d/conda.sh
 conda activate
 set -ux
-pkgname=$(meta .name)-$(meta .version)-*_$(meta .buildnum).tar.bz2
+pkgname=$(meta .name)-$(meta .version)-*_$(meta .buildnum).conda
 pkgs=( $(find conda/conda-bld -type f -name $pkgname) )
 test -z "${pkgs[*]}" && exit 1
 for pkg in ${pkgs[*]}; do
