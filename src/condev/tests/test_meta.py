@@ -37,11 +37,11 @@ def mockmeta():
     mm.build_id = lambda: 1234
     mm.get_rendered_recipe_text.return_value = {
         "requirements": {
-            "build": ["b >1.0,<2.0", "e =1.1"],
+            "build": ["b >1.0,<2.0", "e ==1.1"],
             "host": ["a >2.2", "f <3.3"],
             "run": ["h 4.4", "d 5.5.*"],
         },
-        "test": {"requires": ["c >=6.6", "g"]},
+        "test": {"requires": ["c >=6.6", "e ==1.1", "e >=1.0", "g"]},
     }
     mm.get_section = lambda section: {
         "build": {"number": 88},
@@ -67,19 +67,19 @@ def packages_dev():
         "a >2.2",
         "b >1.0,<2.0",
         "c >=6.6",
-        "d =5.5.*",
-        "e =1.1",
+        "d ==5.5.*",
+        "e ==1.1,>=1.0",
         "f <3.3",
         "g",
-        "h =4.4",
+        "h ==4.4",
     ]
 
 
 @fixture
 def packages_run():
     return [
-        "d =5.5.*",
-        "h =4.4",
+        "d ==5.5.*",
+        "h ==4.4",
     ]
 
 
@@ -124,6 +124,15 @@ def test_get_name(mockmeta):
 
 def test_get_packages_dev(mockmeta, packages_dev):
     assert meta.get_packages(mockmeta, ["build", "host", "run", "test"]) == packages_dev
+
+
+def test_get_packages_fails(capsys, mockmeta):
+    pkg = "a b c"
+    mockmeta.get_rendered_recipe_text.return_value["requirements"]["build"] = [pkg]
+    with raises(SystemExit) as e:
+        meta.get_packages(mockmeta, ["build"])
+    assert e.value.code == 1
+    assert f"Could not parse package info: {pkg}" in capsys.readouterr().err
 
 
 def test_get_packages_missing_sections(mockmeta_missing_sections):

@@ -1,4 +1,5 @@
 {% set info = load_file_data("condev/resources/info.json") %}
+{% set minpy = "3.9" %}
 
 package:
   name: condev
@@ -10,14 +11,15 @@ build:
   noarch: python
   number: {{ info["buildnum"] }}
 requirements:
-  build:
+  host:
     - pip
+    - python {{ minpy }}
     - setuptools
   run:
     - conda-build
     - jq
     - make
-    - python >=3.9
+    - python >={{ minpy }}
 test:
   requires:
     - black
@@ -30,6 +32,7 @@ test:
     - pytest
     - pytest-cov
     - pytest-xdist
+    - python {{ minpy }}
 about: 
   home: https://github.com/maddenp/condev
   license: APACHE

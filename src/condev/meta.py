@@ -8,10 +8,10 @@ import re
 import sys
 from itertools import chain
 from pathlib import Path
-from typing import List
 
 from conda_build import api  # type: ignore
 from conda_build.metadata import MetaData  # type: ignore
+from packaging.specifiers import SpecifierSet as specset
 
 
 def die(message: str) -> None:
@@ -36,7 +36,7 @@ def get_buildnum(meta: MetaData) -> int:
     return int(meta.get_section("build")["number"])
 
 
-def get_channels(recipedir: Path) -> List[str]:
+def get_channels(recipedir: Path) -> list[str]:
     """
     The list of channels from which packages can be used.
     """
@@ -52,7 +52,7 @@ def get_channels(recipedir: Path) -> List[str]:
     return channels
 
 
-def get_meta_json(recipedir: Path, channels: List[str]) -> str:
+def get_meta_json(recipedir: Path, channels: list[str]) -> str:
     """
     A dict version of select package metadata.
     """
@@ -85,12 +85,12 @@ def get_name(meta: MetaData) -> str:
     return str(meta.get_section("package")["name"])
 
 
-def get_packages(meta: MetaData, sections: list) -> list:
+def get_packages(meta: MetaData, sections: list[str]) -> list[str]:
     """
     A sorted list of build/host/run/test packages.
     """
     rrt = meta.get_rendered_recipe_text()
-    pkgs = [
+    raw = [
         *chain.from_iterable(
             [
                 rrt.get("requirements", {}).get(x, [])
@@ -100,12 +100,16 @@ def get_packages(meta: MetaData, sections: list) -> list:
         ),
         *(rrt.get("test", {}).get("requires", []) if "test" in sections else []),
     ]
-    pkglist = []
-    for pkg in pkgs:
-        if " " in pkg and not any(x in pkg for x in ["<", "=", ">"]):
-            pkg = re.sub(r"  *", " =", pkg)
-        pkglist.append(pkg)
-    return sorted(pkglist)
+    pkgs: dict[str, str] = {}
+    for pkg in raw:
+        m = re.match(r"^([^\s]+)(\s+([^\s]+))?$", pkg)
+        if not m:
+            die("Could not parse package info: %s" % pkg)
+        name, spec = m[1], m[3]  # type: ignore[index]
+        if spec and not any(x in spec for x in ["<", "=", ">"]):
+            spec = f"=={spec}"
+        pkgs[name] = str(specset(pkgs[name]) & specset(spec)) if pkgs.get(name) else spec
+    return sorted("%s%s" % (name, f" {spec}" if spec else "") for name, spec in pkgs.items())
 
 
 def get_recipedir() -> Path:
