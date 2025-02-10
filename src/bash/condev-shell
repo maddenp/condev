@@ -52,8 +52,8 @@ condev_msg() {
 condev_rc() {
   set -eu
   local func meta name
-  test -e ~/.condevrc && source ~/.condevrc
-  source $(dirname $CONDA)/../etc/profile.d/conda.sh
+  test -e ~/.condevrc && . ~/.condevrc || true
+  . $(dirname $CONDA)/../etc/profile.d/conda.sh
   condev_activate_safe
   condev_msg "Preparing development environment"
   condev_manage_recipe_dir
@@ -76,7 +76,7 @@ EOF
 test -n "${CONDEV_OLD_PREFIX+x}" && export PREFIX=$CONDEV_OLD_PREFIX || unset PREFIX
 unset CONDEV_OLD_PREFIX
 EOF
-  source $activate
+  . $activate
 }
 
 condev_shell() {
