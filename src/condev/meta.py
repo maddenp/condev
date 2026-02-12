@@ -102,12 +102,15 @@ def get_packages(meta: MetaData, sections: list[str]) -> list[str]:
     ]
     pkgs: dict[str, str] = {}
     for pkg in raw:
-        m = re.match(r"^([^\s]+)(\s+([^\s]+))?$", pkg)
+        m = re.match(r"^([^\s]+)(\s+([^\s]+))?(\s+([^\s]+))?$", pkg)
         if not m:
             die("Could not parse package info: %s" % pkg)
-        name, spec = m[1], m[3]  # type: ignore[index]
-        if spec and not any(x in spec for x in ["<", "=", ">"]):
-            spec = f"=={spec}"
+        name, version, build = m[1], m[3], m[5]  # type: ignore[index]
+        spec = ""
+        if version:
+            spec = version if any(x in version for x in ["<", "=", ">"]) else f"=={version}"
+            if build:
+                spec += f"={build}"
         pkgs[name] = str(specset(pkgs[name]) & specset(spec)) if pkgs.get(name) else spec
     return sorted("%s%s" % (name, f" {spec}" if spec else "") for name, spec in pkgs.items())
 

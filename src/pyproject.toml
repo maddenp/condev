@@ -43,5 +43,5 @@ enable = [
 
 [tool.pytest.ini_options]
 filterwarnings = [
-  "ignore::DeprecationWarning:boltons.timeutils",
+  "ignore:conda.base.constants.CONDA_PACKAGE_EXTENSIONS is pending deprecation:PendingDeprecationWarning",
 ]

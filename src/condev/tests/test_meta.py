@@ -39,7 +39,7 @@ def mockmeta():
         "requirements": {
             "build": ["b >1.0,<2.0", "e ==1.1"],
             "host": ["a >2.2", "f <3.3"],
-            "run": ["h 4.4", "d 5.5.*"],
+            "run": ["h 4.4", "d 5.5.*", "i 7.7.7 build1"],
         },
         "test": {"requires": ["c >=6.6", "e ==1.1", "e >=1.0", "g"]},
     }
@@ -72,6 +72,7 @@ def packages_dev():
         "f <3.3",
         "g",
         "h ==4.4",
+        "i ==7.7.7=build1",
     ]
 
 
@@ -80,6 +81,7 @@ def packages_run():
     return [
         "d ==5.5.*",
         "h ==4.4",
+        "i ==7.7.7=build1",
     ]
 
 
@@ -127,7 +129,7 @@ def test_get_packages_dev(mockmeta, packages_dev):
 
 
 def test_get_packages_fails(capsys, mockmeta):
-    pkg = "a b c"
+    pkg = "a b c d"
     mockmeta.get_rendered_recipe_text.return_value["requirements"]["build"] = [pkg]
     with raises(SystemExit) as e:
         meta.get_packages(mockmeta, ["build"])
