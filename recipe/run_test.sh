@@ -41,7 +41,7 @@ unittest() {
   msg Running unit tests
   (
     set -eux
-    pytest --cov=condev -n 1 .
+    pytest --cov=condev .
   )
   msg OK
 }

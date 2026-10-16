@@ -40,7 +40,7 @@ unittest() {
   msg Running unit tests
   (
     set -eux
-    pytest --cov=hello -n 1 .
+    pytest --cov=hello .
   )
   msg OK
 }

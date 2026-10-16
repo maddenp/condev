@@ -175,5 +175,5 @@ def test_main(meta_json, solves, tmpdir):
         api.render.assert_called_once()
     meta_json_path = Path(tmpdir, "meta.json")
     assert meta_json_path.is_file()
-    with meta_json.path.open() as f:
+    with meta_json_path.open() as f:
         assert meta.json.load(f) == meta_json
