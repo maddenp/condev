@@ -4,19 +4,16 @@
   "name": "condev",
   "packages": {
     "dev": [
-      "black",
       "conda-build",
-      "docformatter",
-      "isort",
+      "docformatter ==1.7.*",
       "jq",
       "make",
       "mypy",
       "pip",
-      "pylint",
       "pytest",
       "pytest-cov",
-      "pytest-xdist",
       "python ==3.10,>=3.10",
+      "ruff",
       "setuptools"
     ],
     "run": [
