@@ -25,7 +25,11 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = []
+ignore = [
+  "COM812",  # missing-trailing-comma
+  "D203",    # incorrect-blank-line-before-class
+  "D212",    # multi-line-summary-first-line
+]
 
 #[tool.pytest.ini_options]
 #filterwarnings = [

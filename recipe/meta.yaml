@@ -22,7 +22,6 @@ requirements:
     - python >={{ minpy }}
 test:
   requires:
-    - docformatter 1.7.*
     - jq
     - mypy
     - pytest
