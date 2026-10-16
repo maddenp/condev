@@ -26,9 +26,29 @@ line-length = 100
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
+#  "ANN001",  # missing-type-function-argument PM FIXME
+  "ANN201",  # missing-return-type-class-method
   "COM812",  # missing-trailing-comma
+  "CPY001",  # missing-copyright-notice
+  "D104",    # undocumented-public-package
+  "D200",    # unnecessary-multiline-docstring
+  "D103",    # undocumented-public-function
+  "PLR2004", # magic-value-comparison
   "D203",    # incorrect-blank-line-before-class
   "D212",    # multi-line-summary-first-line
+  "S101",    # assert
+  "T201",    # print
+  "D401",    # non-imperative-mood
+  "UP031",   # printf-string-formatting
+]
+
+[tool.ruff.lint.per-file-ignores]
+"src/condev/tests/*" = [
+  "ANN001",  # missing-type-function-argument
+#  "N802",    # invalid-function-name
+#  "N806",    # non-lowercase-variable-in-function
+  "PT013",   # pytest-incorrect-pytest-import
+#  "SLF001",  # private-member-access
 ]
 
 #[tool.pytest.ini_options]
