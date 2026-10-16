@@ -19,7 +19,7 @@ lint() {
   msg Running linter
   (
     set -eux
-    pylint .
+    ruff check .
   )
   msg OK
 }
@@ -32,7 +32,7 @@ typecheck() {
   msg Running typechecker
   (
     set -eux
-    mypy --install-types --non-interactive .
+    mypy .
   )
   msg OK
 }
@@ -41,17 +41,16 @@ unittest() {
   msg Running unit tests
   (
     set -eux
-    pytest --cov=condev -n 1 .
+    pytest --cov=condev .
   )
   msg OK
 }
 
-test "${CONDA_BUILD:-}" = 1 && cd ../test_files || cd $(dirname $0)/../src
-if [[ -n "${1:-}" ]]; then
-  # Run single specified code-quality tool.
+test -v CONDA_BUILD && cd ../test_files || cd src
+
+if [[ -v 1 ]]; then # run single specified code-quality tool.
   $1
-else
-  # Run all code-quality tools.
+else # run all code-quality tools.
   lint
   typecheck
   unittest

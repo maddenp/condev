@@ -148,13 +148,14 @@ def test_get_packages_run(mockmeta, packages_run):
 
 def test_get_recipedir(tmpdir):
     # Test case where RECIPE_DIR is not set in environment:
-    with patch.object(meta.os, "environ", new={}):
-        with raises(SystemExit):
-            meta.get_recipedir()
+    with patch.object(meta.os, "environ", new={}), raises(SystemExit):
+        meta.get_recipedir()
     # Test case where RECIPE_DIR is set but is not a directory:
-    with patch.object(meta.os, "environ", new={"RECIPE_DIR": Path(tmpdir, "no-such-dir")}):
-        with raises(SystemExit):
-            meta.get_recipedir()
+    with (
+        patch.object(meta.os, "environ", new={"RECIPE_DIR": Path(tmpdir, "no-such-dir")}),
+        raises(SystemExit),
+    ):
+        meta.get_recipedir()
     # Test case where RECIPE_DIR is set and is a directory:
     with patch.object(meta.os, "environ", new={"RECIPE_DIR": tmpdir}):
         assert meta.get_recipedir() == tmpdir
@@ -165,12 +166,14 @@ def test_get_version(mockmeta):
 
 
 def test_main(meta_json, solves, tmpdir):
-    with patch.object(meta.os, "environ", new={"RECIPE_DIR": tmpdir}):
-        with patch.object(meta, "api") as api:
-            api.render.return_value = solves
-            meta.main()
-            api.render.assert_called_once()
+    with (
+        patch.object(meta.os, "environ", new={"RECIPE_DIR": tmpdir}),
+        patch.object(meta, "api") as api,
+    ):
+        api.render.return_value = solves
+        meta.main()
+        api.render.assert_called_once()
     meta_json_path = Path(tmpdir, "meta.json")
     assert meta_json_path.is_file()
-    with open(meta_json_path, "r", encoding="utf-8") as f:
+    with meta_json_path.open() as f:
         assert meta.json.load(f) == meta_json

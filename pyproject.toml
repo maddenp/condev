@@ -1,0 +1,46 @@
+[tool.coverage.report]
+fail_under = 100
+omit = ["*/tests/*"]
+show_missing = true
+skip_covered = true
+
+[tool.docformatter]
+black = true
+in-place = true
+make-summary-multi-line = true
+pre-summary-newline = true
+recursive = true
+wrap-descriptions = 100
+wrap-summaries = 100
+
+[tool.mypy]
+check_untyped_defs = true
+pretty = true
+warn_return_any = true
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  "ANN201",  # missing-return-type-class-method
+  "COM812",  # missing-trailing-comma
+  "CPY001",  # missing-copyright-notice
+  "D103",    # undocumented-public-function
+  "D104",    # undocumented-public-package
+  "D200",    # unnecessary-multiline-docstring
+  "D203",    # incorrect-blank-line-before-class
+  "D212",    # multi-line-summary-first-line
+  "D401",    # non-imperative-mood
+  "PLR2004", # magic-value-comparison
+  "S101",    # assert
+  "T201",    # print
+  "UP031",   # printf-string-formatting
+]
+
+[tool.ruff.lint.per-file-ignores]
+"**/condev/tests/*" = [
+  "ANN001",  # missing-type-function-argument
+  "PT013",   # pytest-incorrect-pytest-import
+]

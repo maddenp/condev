@@ -4,19 +4,15 @@
   "name": "condev",
   "packages": {
     "dev": [
-      "black",
       "conda-build",
-      "docformatter",
-      "isort",
       "jq",
       "make",
       "mypy",
       "pip",
-      "pylint",
       "pytest",
       "pytest-cov",
-      "pytest-xdist",
       "python ==3.10,>=3.10",
+      "ruff",
       "setuptools"
     ],
     "run": [
@@ -26,5 +22,5 @@
       "python >=3.10"
     ]
   },
-  "version": "0.7.3"
+  "version": "0.8.0"
 }

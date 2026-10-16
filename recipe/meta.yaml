@@ -1,5 +1,5 @@
 {% set info = load_file_data("condev/resources/info.json") %}
-{% set minpy = "3.10" %}
+{% set minpy = "3.11" %}
 
 package:
   name: condev
@@ -22,17 +22,12 @@ requirements:
     - python >={{ minpy }}
 test:
   requires:
-    - black
-    - docformatter
-    - isort
     - jq
-    - make
     - mypy
-    - pylint
     - pytest
     - pytest-cov
-    - pytest-xdist
     - python {{ minpy }}
+    - ruff
 about: 
   home: https://github.com/maddenp/condev
   license: APACHE

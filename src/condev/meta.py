@@ -9,9 +9,9 @@ import sys
 from itertools import chain
 from pathlib import Path
 
-from conda_build import api  # type: ignore
-from conda_build.metadata import MetaData  # type: ignore
-from packaging.specifiers import SpecifierSet as specset
+from conda_build import api  # type: ignore[import-untyped]
+from conda_build.metadata import MetaData  # type: ignore[import-untyped]
+from packaging.specifiers import SpecifierSet
 
 
 def die(message: str) -> None:
@@ -44,7 +44,7 @@ def get_channels(recipedir: Path) -> list[str]:
     channels = []
     channels_file = Path(recipedir, "channels")
     if channels_file.is_file():
-        with open(channels_file, "r", encoding="utf-8") as f:
+        with channels_file.open() as f:
             channels = list(filter(None, f.read().split("\n")))
     else:
         msg("No 'channels' file found in recipe directory, using defaults")
@@ -111,7 +111,7 @@ def get_packages(meta: MetaData, sections: list[str]) -> list[str]:
             spec = version if any(x in version for x in ["<", "=", ">"]) else f"=={version}"
             if build:
                 spec += f"={build}"
-        pkgs[name] = str(specset(pkgs[name]) & specset(spec)) if pkgs.get(name) else spec
+        pkgs[name] = str(SpecifierSet(pkgs[name]) & SpecifierSet(spec)) if pkgs.get(name) else spec
     return sorted("%s%s" % (name, f" {spec}" if spec else "") for name, spec in pkgs.items())
 
 
@@ -143,7 +143,7 @@ def main() -> None:
     recipedir = get_recipedir()
     channels = get_channels(recipedir)
     meta_json = get_meta_json(recipedir, channels)
-    with open(Path(recipedir, "meta.json"), "w", encoding="utf-8") as f:
+    with Path(recipedir, "meta.json").open("w") as f:
         print(meta_json, file=f)
 
 
