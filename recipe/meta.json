@@ -5,7 +5,6 @@
   "packages": {
     "dev": [
       "conda-build",
-      "docformatter ==1.7.*",
       "jq",
       "make",
       "mypy",
