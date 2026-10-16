@@ -9,8 +9,8 @@ import sys
 from itertools import chain
 from pathlib import Path
 
-from conda_build import api
-from conda_build.metadata import MetaData
+from conda_build import api  # type: ignore[import-untyped]
+from conda_build.metadata import MetaData  # type: ignore[import-untyped]
 from packaging.specifiers import SpecifierSet
 
 
