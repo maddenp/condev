@@ -20,15 +20,11 @@ requirements:
     - python
 test:
   requires:
-    - black
-    - docformatter
-    - isort
+    - docformatter 1.7.*
     - jq
-    - make
     - mypy
-    - pylint
     - pytest
     - pytest-cov
-    - pytest-xdist
+    - ruff
 about: 
   license: OTHER

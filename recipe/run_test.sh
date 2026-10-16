@@ -19,7 +19,7 @@ lint() {
   msg Running linter
   (
     set -eux
-    pylint .
+    ruff check .
   )
   msg OK
 }
@@ -32,7 +32,7 @@ typecheck() {
   msg Running typechecker
   (
     set -eux
-    mypy --install-types --non-interactive .
+    mypy .
   )
   msg OK
 }

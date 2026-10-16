@@ -20,7 +20,7 @@ kwargs = {
     "include_package_data": True,
     "name": name_conda,
     "packages": find_packages(exclude=["%s.tests" % name_py], include=[name_py, "%s.*" % name_py]),
-    "scripts": ["bash/condev-shell"],
+    "scripts": ["src/bash/condev-shell"],
     "version": meta["version"],
 }
 

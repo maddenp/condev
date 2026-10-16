@@ -22,17 +22,13 @@ requirements:
     - python >={{ minpy }}
 test:
   requires:
-    - black
-    - docformatter
-    - isort
+    - docformatter 1.7.*
     - jq
-    - make
     - mypy
-    - pylint
     - pytest
     - pytest-cov
-    - pytest-xdist
     - python {{ minpy }}
+    - ruff
 about: 
   home: https://github.com/maddenp/condev
   license: APACHE
