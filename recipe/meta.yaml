@@ -1,5 +1,5 @@
 {% set info = load_file_data("condev/resources/info.json") %}
-{% set minpy = "3.10" %}
+{% set minpy = "3.11" %}
 
 package:
   name: condev
