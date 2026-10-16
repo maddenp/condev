@@ -7,7 +7,7 @@ METADEPS   = $(RECIPE_DIR)/meta.yaml src/*/resources/info.json
 METAJSON   = $(RECIPE_DIR)/meta.json
 NAME       = $(call val,.name)
 RECIPE_DIR = $(shell cd ./recipe && pwd)
-TARGETS    = devshell env format lint package test typecheck unittest
+TARGETS    = devshell env format lint package test typecheck unittest world
 VERSION    = $(call val,.version)
 
 export RECIPE_DIR := $(RECIPE_DIR)
@@ -45,6 +45,9 @@ typecheck:
 
 unittest:
 	recipe/run_test.sh unittest
+
+world:
+	make -C src/world install
 
 $(METAJSON): $(METADEPS)
 	condev-meta

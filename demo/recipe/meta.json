@@ -1,24 +1,18 @@
 {
-  "build": "py312h920789f_0",
+  "build": "py313h920789f_0",
   "buildnum": 0,
   "name": "hello",
   "packages": {
     "dev": [
-      "black",
-      "docformatter",
       "gcc_linux-aarch64",
-      "isort",
       "jq",
-      "make",
       "make",
       "mypy",
       "pip",
-      "pylint",
       "pytest",
       "pytest-cov",
-      "pytest-xdist",
       "python",
-      "python",
+      "ruff",
       "setuptools"
     ],
     "run": [
