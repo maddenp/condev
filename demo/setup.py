@@ -21,7 +21,12 @@ kwargs = {
     "entry_points": {"console_scripts": ["heythere = %s.core:main" % name_py]},
     "include_package_data": True,
     "name": name_conda,
-    "packages": find_packages(exclude=["%s.tests" % name_py], include=[name_py, "%s.*" % name_py]),
+    "package_dir": {"": src},
+    "packages": find_packages(
+        exclude=["%s.tests" % name_py],
+        include=[name_py, "%s.*" % name_py],
+        where=src,
+    ),
     "version": meta["version"],
 }
 
