@@ -21,7 +21,12 @@ kwargs = {
     "entry_points": {"console_scripts": ["condev-meta = %s.meta:main" % name_py]},
     "include_package_data": True,
     "name": name_conda,
-    "packages": find_packages(exclude=["%s.tests" % name_py], include=[name_py, "%s.*" % name_py]),
+    "package_dir": {"": src},
+    "packages": find_packages(
+        exclude=["%s.tests" % name_py],
+        include=[name_py, "%s.*" % name_py],
+        where=src,
+    ),
     "scripts": [f"{src}/bash/condev-shell"],
     "version": meta["version"],
 }
