@@ -22,7 +22,7 @@ kwargs = {
     "name": name_conda,
     "package_dir": {"": src},
     "packages": find_packages(where=src),
-    "scripts": ["condev-shell"],
+    "scripts": [f"{src}/condev-shell"],
     "version": meta["version"],
 }
 
