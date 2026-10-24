@@ -7,7 +7,7 @@ from setuptools import find_packages, setup
 
 # Collect package metadata, etc.
 
-recipe = os.environ.get("RECIPE_DIR", "../recipe")
+recipe = os.environ.get("RECIPE_DIR", "recipe")
 metasrc = Path(recipe, "meta.json")
 meta = json.loads(metasrc.read_text())
 name_conda = meta["name"]
@@ -28,11 +28,13 @@ kwargs = {
 
 # Define dependency packages for non-devshell installs.
 
+do_not_install = ["conda-build", "python"]
+
 if not os.environ.get("CONDEV_SHELL"):
     kwargs["install_requires"] = [
-        pkg.replace(" =", "==")
+        pkg.replace(" ==", "==")
         for pkg in meta["packages"]["run"]
-        if not re.match(r"^python .*$", pkg)
+        if not any(re.match(rf"^{x}.*$", pkg) for x in do_not_install)
     ]
 
 # Install.
