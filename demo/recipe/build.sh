@@ -2,7 +2,7 @@ set -eux
 root=$(readlink -f $RECIPE_DIR/..)
 # Install Python code:
 cp -v $root/setup.py .
-python -m pip install -vv .
+python -m pip install -vvv .
 # Install machine code:
 make -C world install
 # Stage files needed during test phase:
@@ -11,4 +11,4 @@ rm -fr $dst
 mkdir -pv $dst
 mv -v $PKG_NAME $dst/
 ln -sv $dst/$PKG_NAME
-cp -v $root/pyproject.toml $dst/
+cp -rv $root/{pyproject.toml,tests} $dst/
