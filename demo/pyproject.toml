@@ -1,8 +1,11 @@
 [tool.coverage.report]
 fail_under = 100
-omit = ["*/tests/*"]
 show_missing = true
 skip_covered = true
+
+[tool.coverage.run]
+branch = true
+source_pkgs = ["hello"]
 
 [tool.docformatter]
 black = true
@@ -27,6 +30,7 @@ ignore = [
   "ANN201",  # missing-return-type-class-method
   "COM812",  # missing-trailing-comma
   "CPY001",  # missing-copyright-notice
+  "D100",    # undocumented-public-module
   "D103",    # undocumented-public-function
   "D104",    # undocumented-public-package
   "D200",    # unnecessary-multiline-docstring
@@ -40,7 +44,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"**/hello/tests/*" = [
+"tests/*" = [
   "ANN001",  # missing-type-function-argument
   "PT013",   # pytest-incorrect-pytest-import
 ]

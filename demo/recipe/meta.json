@@ -13,7 +13,8 @@
       "pytest-cov",
       "python",
       "ruff",
-      "setuptools"
+      "setuptools",
+      "types-setuptools"
     ],
     "run": [
       "python"

@@ -3,11 +3,11 @@ val = $(shell jq -r $(1) $(METAJSON))
 BUILD      = $(call val,.build)
 BUILDNUM   = $(call val,.buildnum)
 CHANNELS   = $(addprefix -c ,$(shell tr '\n' ' ' <$(RECIPE_DIR)/channels)) -c local
-METADEPS   = $(RECIPE_DIR)/meta.yaml src/*/resources/info.json
+METADEPS   = $(RECIPE_DIR)/meta.yaml src/condev/resources/info.json
 METAJSON   = $(RECIPE_DIR)/meta.json
 NAME       = $(call val,.name)
 RECIPE_DIR = $(shell cd ./recipe && pwd)
-TARGETS    = devshell env format lint package test typecheck unittest
+TARGETS    = devshell env format lint meta package test typecheck unittest
 VERSION    = $(call val,.version)
 
 export RECIPE_DIR := $(RECIPE_DIR)
@@ -18,13 +18,13 @@ all:
 	$(error Valid targets are: $(TARGETS))
 
 devshell:
-	src/bash/condev-shell || true
+	src/condev-shell
 
 env: package
 	conda create -y -n $(NAME)-$(VERSION)-$(BUILDNUM) $(CHANNELS) $(NAME)=$(VERSION)=$(BUILD)
 
 format:
-	@./format
+	@bin/format
 
 lint:
 	recipe/run_test.sh lint
@@ -44,4 +44,4 @@ unittest:
 	recipe/run_test.sh unittest
 
 $(METAJSON): $(METADEPS)
-	PYTHONPATH=$(shell cd ./src && pwd) python -m condev.meta
+	python -m condev.meta

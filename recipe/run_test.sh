@@ -19,7 +19,7 @@ lint() {
   msg Running linter
   (
     set -eux
-    ruff check .
+    ruff check --exclude demo/ .
   )
   msg OK
 }
@@ -32,7 +32,7 @@ typecheck() {
   msg Running typechecker
   (
     set -eux
-    mypy .
+    mypy --exclude demo/ .
   )
   msg OK
 }
@@ -41,12 +41,12 @@ unittest() {
   msg Running unit tests
   (
     set -eux
-    pytest --cov=condev .
+    pytest --cov=condev tests/
   )
   msg OK
 }
 
-test -v CONDA_BUILD && cd ../test_files || cd src
+test -v CONDA_BUILD && cd ../test_files
 
 if [[ -v 1 ]]; then # run single specified code-quality tool.
   $1
