@@ -7,7 +7,7 @@ Unit tests for condev.meta module.
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-from pytest import fixture, raises
+from pytest import fixture, mark, raises
 
 from condev import meta
 
@@ -110,14 +110,19 @@ def test_get_channels(data, tmpdir):
     assert meta.get_channels(tmpdir) == ["local"]
 
 
-def test_get_meta_json(data, meta_json, mockmeta, solves):
+@mark.parametrize("single_variant", [True, False])
+def test_get_meta_json(capsys, data, meta_json, mockmeta, single_variant, solves):
     with patch.object(meta, "api") as api:
+        if single_variant:
+            solves.pop()
         api.render.return_value = solves
         channels = ["c1", "c2"]
         x = meta.json.loads(meta.get_meta_json(recipedir=data, channels=channels))
         assert x == meta_json
         api.render.assert_called_once_with(data, channels=channels, override_channels=True)
         mockmeta.clean.assert_called_once()
+        if not single_variant:
+            assert "Using first of 2 variants found" in capsys.readouterr().err
 
 
 def test_get_name(mockmeta):

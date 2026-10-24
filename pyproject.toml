@@ -4,7 +4,7 @@ show_missing = true
 skip_covered = true
 
 [tool.coverage.run]
-branch = false
+branch = true
 source_pkgs = ["condev"]
 
 [tool.docformatter]
@@ -46,5 +46,7 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = [
   "ANN001",  # missing-type-function-argument
+  "PLR0913", # too-many-arguments
+  "PLR0917", # too-many-positional-arguments
   "PT013",   # pytest-incorrect-pytest-import
 ]
