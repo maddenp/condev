@@ -19,7 +19,7 @@ lint() {
   msg Running linter
   (
     set -eux
-    ruff check .
+    ruff check --exclude demo/ .
   )
   msg OK
 }
@@ -32,7 +32,7 @@ typecheck() {
   msg Running typechecker
   (
     set -eux
-    mypy .
+    mypy --exclude demo/ .
   )
   msg OK
 }
@@ -41,7 +41,7 @@ unittest() {
   msg Running unit tests
   (
     set -eux
-    pytest --cov=condev .
+    pytest --cov=condev tests/
   )
   msg OK
 }

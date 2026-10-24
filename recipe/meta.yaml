@@ -28,6 +28,7 @@ test:
     - pytest-cov
     - python {{ minpy }}
     - ruff
+    - types-setuptools
 about: 
   home: https://github.com/maddenp/condev
   license: APACHE
