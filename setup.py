@@ -3,14 +3,13 @@ import json
 import os
 import re
 
-from setuptools import find_packages, setup  # type: ignore
+from setuptools import find_packages, setup
 
 # Collect package metadata, etc.
 
 recipe = os.environ.get("RECIPE_DIR", "../recipe")
 metasrc = Path(recipe, "meta.json")
-with metasrc.open() as f:
-    meta = json.load(f)
+meta = json.loads(metasrc.read_text())
 name_conda = meta["name"]
 name_py = name_conda.replace("-", "_")
 src = "." if os.environ.get("CONDA_BUILD") else "src"
@@ -22,12 +21,8 @@ kwargs = {
     "include_package_data": True,
     "name": name_conda,
     "package_dir": {"": src},
-    "packages": find_packages(
-        exclude=["%s.tests" % name_py],
-        include=[name_py, "%s.*" % name_py],
-        where=src,
-    ),
-    "scripts": [f"{src}/bash/condev-shell"],
+    "packages": find_packages(where=src),
+    "scripts": [f"bin/condev-shell"],
     "version": meta["version"],
 }
 

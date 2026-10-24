@@ -46,7 +46,7 @@ unittest() {
   msg OK
 }
 
-test -v CONDA_BUILD && cd ../test_files || cd src
+test -v CONDA_BUILD && cd ../test_files
 
 if [[ -v 1 ]]; then # run single specified code-quality tool.
   $1
