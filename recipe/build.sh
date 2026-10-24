@@ -9,4 +9,4 @@ rm -fr $dst
 mkdir -pv $dst
 mv -v $PKG_NAME $dst/
 ln -sv $dst/$PKG_NAME
-cp -v $root/pyproject.toml $dst/
+cp -rv $root/{pyproject.toml,tests} $dst/
